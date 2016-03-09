@@ -32,22 +32,32 @@ def init(first, firstValue, second, secondValue, result, resultValue):
     print("Number of permutations = ", len(PossibleValues))
 
 
-def evalCapability(feature):
+def evalResultsDist(feature: dict) -> int:
     global Terms
 
-    localValue = ""
-    for letter in Terms["result"].word:
-        localValue += str(feature[letter])
-    localValue = int(localValue)
-
+    localValue = getWordValue(feature, Terms["result"].word)
     realValue = Terms["result"].value
 
-    print("Meu Resultado =", localValue)
-    print("Resultado Esperado =", realValue)
-    realDist = abs(localValue - realValue)
-    print("Distancia = ", realDist)
-    return realDist
+    # print("Meu Resultado =", localValue)
+    # print("Resultado Esperado =", realValue)
+    dist = abs(localValue - realValue)
+    # print("Distancia = ", dist)
+    return dist
 
+def evalOperationDist(feature: dict) -> int:
+    global Terms
+
+    send = getWordValue(feature, "send")
+    more = getWordValue(feature, "more")
+    money = getWordValue(feature, "money")
+
+    return abs(send+more - money)
+
+def evalCapability(feature: dict) -> int:
+    opDist = evalOperationDist(feature)
+    resDist = evalResultsDist(feature)
+
+    return (opDist + resDist)/2
 
 def makeSpecimen(quantity: int = 1):
     global Letters
@@ -62,7 +72,7 @@ def makeSpecimen(quantity: int = 1):
         for value, letter in zip(myValue, Letters):
             specimenAlphabet[letter] = value
 
-        Specimen(SpecimenDict, evalCapability)
+        Specimen(specimenAlphabet, evalOperationDist)
 
 def getWordValue(alphabet: dict, word: str) -> int:
     value = ""
