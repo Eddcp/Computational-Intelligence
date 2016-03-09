@@ -19,3 +19,10 @@ class Specimen(object):
             if specimen.capability < best.capability:
                 best = specimen
         return best
+
+    def __str__(self):
+        s = ""
+        s += "Feature= " + str(self.feature)
+        s += "\tCapability= " + str(self.capability)
+        return s
+
