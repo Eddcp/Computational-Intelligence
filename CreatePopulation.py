@@ -32,6 +32,7 @@ def init(first, firstValue, second, secondValue, result, resultValue):
     print("Number of permutations = ", len(PossibleValues))
 
 
+# returns distance between the given real result and the "local" specimen's result (mapped)
 def evalResultsDist(feature: dict) -> int:
     global Terms
 
@@ -44,6 +45,8 @@ def evalResultsDist(feature: dict) -> int:
     # print("Distancia = ", dist)
     return dist
 
+
+# returns how far the specimen's result (mapped) is from the result evaluated through the expression
 def evalOperationDist(feature: dict) -> int:
     global Terms
 
@@ -53,11 +56,13 @@ def evalOperationDist(feature: dict) -> int:
 
     return abs(send+more - money)
 
+
 def evalCapability(feature: dict) -> int:
     opDist = evalOperationDist(feature)
     resDist = evalResultsDist(feature)
 
     return (opDist + resDist)/2
+
 
 def makeSpecimen(quantity: int = 1):
     global Letters
@@ -73,6 +78,7 @@ def makeSpecimen(quantity: int = 1):
             specimenAlphabet[letter] = value
 
         Specimen(specimenAlphabet, evalOperationDist)
+
 
 def getWordValue(alphabet: dict, word: str) -> int:
     value = ""
