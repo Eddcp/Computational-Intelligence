@@ -2,7 +2,9 @@ import itertools
 import random
 
 import collections
+
 from Specimen import *
+from Selection import *
 
 NUMBERS = range(10)
 
@@ -13,7 +15,11 @@ Term = collections.namedtuple("Term", ["word", "value"])
 Terms = {}
 
 
-def init(first, firstValue, second, secondValue, result, resultValue):
+def init(populationSize:int=100, generations:int=50, fertilityRate:int=60, mutationRate:int=5):
+    pass
+
+
+def getExpression(first, firstValue, second, secondValue, result, resultValue):
     global Letters
     global NUMBERS
     global PossibleValues
@@ -33,10 +39,10 @@ def init(first, firstValue, second, secondValue, result, resultValue):
 
 
 # returns distance between the given real result and the "local" specimen's result (mapped)
-def evalResultsDist(feature: dict) -> int:
+def evalResultsDist(chromosome: dict) -> int:
     global Terms
 
-    localValue = getWordValue(feature, Terms["result"].word)
+    localValue = getWordValue(chromosome, Terms["result"].word)
     realValue = Terms["result"].value
 
     # print("Meu Resultado =", localValue)
@@ -47,21 +53,18 @@ def evalResultsDist(feature: dict) -> int:
 
 
 # returns how far the specimen's result (mapped) is from the result evaluated through the expression
-def evalOperationDist(feature: dict) -> int:
+def evalOperationDist(chromosome: dict) -> int:
     global Terms
 
-    send = getWordValue(feature, "send")
-    more = getWordValue(feature, "more")
-    money = getWordValue(feature, "money")
+    send = getWordValue(chromosome, "send")
+    more = getWordValue(chromosome, "more")
+    money = getWordValue(chromosome, "money")
 
     return abs(send+more - money)
 
 
-def evalCapability(feature: dict) -> int:
-    opDist = evalOperationDist(feature)
-    resDist = evalResultsDist(feature)
-
-    return (opDist + resDist)/2
+def evalFitness(chromosome: dict) -> int:
+    return evalOperationDist(chromosome)
 
 
 def makeSpecimen(quantity: int = 1):
@@ -77,7 +80,7 @@ def makeSpecimen(quantity: int = 1):
         for value, letter in zip(myValue, Letters):
             specimenAlphabet[letter] = value
 
-        Specimen(specimenAlphabet, evalOperationDist)
+        Specimen(specimenAlphabet, evalFitness)
 
 
 def getWordValue(alphabet: dict, word: str) -> int:
@@ -86,16 +89,16 @@ def getWordValue(alphabet: dict, word: str) -> int:
         value += str(alphabet[letter])
     return int(value)
 
-init("send", 9567, "more", 1085, "money", 10652)
+getExpression("send", 9567, "more", 1085, "money", 10652)
 makeSpecimen(100)
 
 
 
 best = Specimen.getBestSpecimen()
 print("\nBest Specimen:\n", best, sep="")
-send = getWordValue(best.feature, "send")
-more = getWordValue(best.feature, "more")
-money = getWordValue(best.feature, "money")
+send = getWordValue(best.chromosome, "send")
+more = getWordValue(best.chromosome, "more")
+money = getWordValue(best.chromosome, "money")
 print("SEND = ", send)
 print("MORE = ", more)
 print("MONEY = ", money)
