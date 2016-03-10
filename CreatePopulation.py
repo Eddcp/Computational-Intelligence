@@ -104,3 +104,9 @@ print("MORE = ", more)
 print("MONEY = ", money)
 print("SEND + MORE = MONEY ?? ", send + more)
 print("Real Capability = ", abs(send + more - 10652))
+
+for x in Roulette(Specimen.Population):
+    print(x)
+
+
+# TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações
