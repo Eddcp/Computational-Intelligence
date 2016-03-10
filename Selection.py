@@ -1,7 +1,14 @@
+# these are Selection functions used in a Genetic Algorithm to, primarily,
+# select which individuals are going to procreate. But they can be used any
+# time you need a selection system.
+
+
 import random
 
 
-def Tournament(population:list, tour:int=3, quantity:int=2):
+# Tournament has a low "Selection Pressure" since you could reasonably choose
+# just low fitness individuals to "fight" with each other.
+def Tournament(population:list, tour:int=3, quantity:int=2) -> list:
     chosen = []
     for i in range(tour):
         choice = random.choice(population)
@@ -23,7 +30,9 @@ def Tournament(population:list, tour:int=3, quantity:int=2):
     return betters
 
 
-def Roulette(population:list, quantity:int=2):
+# Roulette has a high "Selection Pressure" because the chance of being chosen
+# is directly related to the individual's fitness.
+def Roulette(population:list, quantity:int=2) -> list:
     roulette = []
     for specimen in population:
         roulette.extend([specimen] * specimen.fitness)

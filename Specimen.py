@@ -17,7 +17,7 @@ class Specimen(object):
             return None
         best = Specimen.Population[0]
         for specimen in Specimen.Population:
-            if specimen.fitness < best.fitness:
+            if specimen > best:
                 best = specimen
         return best
 
