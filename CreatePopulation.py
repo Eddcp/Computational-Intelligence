@@ -105,7 +105,7 @@ print("MONEY = ", money)
 print("SEND + MORE = MONEY ?? ", send + more)
 print("Real Capability = ", abs(send + more - 10652))
 
-for x in Roulette(Specimen.Population):
+for x in GoodRoulette(Specimen.Population):
     print(x)
 
 

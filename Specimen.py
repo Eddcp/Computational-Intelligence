@@ -23,7 +23,7 @@ class Specimen(object):
 
     def __str__(self):
         s = ""
-        s += "Feature= " + str(self.chromosome)
+        s += "Fitness= " + str(self.chromosome)
         s += "\tCapability= " + str(self.fitness)
         return s
 
