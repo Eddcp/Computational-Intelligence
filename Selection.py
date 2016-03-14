@@ -2,7 +2,6 @@
 # select which individuals are going to procreate. But they can be used any
 # time you need a selection system.
 
-
 import random
 
 
