@@ -11,6 +11,9 @@ class Specimen(object):
         self.fitness = fitnessEvalFunction(chromosome)
         self.Population.append(self)
 
+    def evalFitness(self):
+        self.fitness = self.fitnessEvalFunction(self.chromosome)
+
     @staticmethod
     def getBestSpecimen():
         if not Specimen.Population:

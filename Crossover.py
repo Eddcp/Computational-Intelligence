@@ -4,19 +4,22 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
 
 def cyclicCrossover(parent1:dict, parent2:dict, children:int=1):
-    assert parent1 and parent2 and children in range(1,3)
+    assert parent1 and parent2 and children in (1, 2)
     logging.debug("Parent1= " + str(parent1))
     logging.debug("Parent2= " + str(parent2))
 
     # randomizing where to start the crossover
+    # trying to get a position that can be changed
     for _ in range(len(parent1)):
         letter = random.choice(list(parent1.keys()))
         value1 = parent1[letter]
         value2 = parent2[letter]
         if value1 is not value2:
+            # already got a position that can be changed
             break
 
     # seeing what can be changed in both parents in order to create a valid child.
+    # making a "cyclic permutation"
     changed = collections.OrderedDict()
     for _ in range(len(parent1)):
         if value1 in changed:
@@ -43,6 +46,7 @@ def cyclicCrossover(parent1:dict, parent2:dict, children:int=1):
         logging.debug("Child= " + str(child))
         childs.append(child)
         parent = parent2
+
     return childs
 
 

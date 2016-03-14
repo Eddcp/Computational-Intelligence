@@ -5,6 +5,7 @@ import collections
 
 from Specimen import *
 from Selection import *
+from Mutation import *
 
 NUMBERS = range(10)
 
@@ -107,6 +108,8 @@ print("Real Capability = ", abs(send + more - 10652))
 
 for x in GoodRoulette(Specimen.Population):
     print(x)
+
+makeMutation(Specimen.Population, 5)
 
 
 # TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações
