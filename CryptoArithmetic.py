@@ -1,23 +1,18 @@
 import itertools
 import random
-
 import collections
+import logging
 
 from Specimen import *
-from Selection import *
-from Mutation import *
 
-NUMBERS = range(10)
+BASE = 10
+NUMBERS = range(BASE)
 
 Letters = ""
 PossibleValues = []
 
 Term = collections.namedtuple("Term", ["word", "value"])
 Terms = {}
-
-
-def init(populationSize:int=100, generations:int=50, fertilityRate:int=60, mutationRate:int=5):
-    pass
 
 
 def getExpression(first, firstValue, second, secondValue, result, resultValue):
@@ -36,14 +31,14 @@ def getExpression(first, firstValue, second, secondValue, result, resultValue):
             Letters += letter
 
     PossibleValues = list(itertools.permutations(NUMBERS, len(Letters)))
-    print("Number of permutations = ", len(PossibleValues))
+    logging.debug("Number of permutations = {}".format(len(PossibleValues)))
 
 
 # returns distance between the given real result and the "local" specimen's result (mapped)
-def evalResultsDist(chromosome: dict) -> int:
+def evalResultsDist(alphabet: dict) -> int:
     global Terms
 
-    localValue = getWordValue(chromosome, Terms["result"].word)
+    localValue = getWordValue(alphabet, Terms["result"].word)
     realValue = Terms["result"].value
 
     # print("Meu Resultado =", localValue)
@@ -54,23 +49,31 @@ def evalResultsDist(chromosome: dict) -> int:
 
 
 # returns how far the specimen's result (mapped) is from the result evaluated through the expression
-def evalOperationDist(chromosome: dict) -> int:
+def evalOperationDist(alphabet: dict) -> int:
     global Terms
+    global Letters
+    global BASE
 
-    send = getWordValue(chromosome, "send")
-    more = getWordValue(chromosome, "more")
-    money = getWordValue(chromosome, "money")
+    term1 = getWordValue(alphabet, Terms["first"].word)
+    term2 = getWordValue(alphabet, Terms["second"].word)
+    result = getWordValue(alphabet, Terms["result"].word)
 
-    return abs(send+more - money)
+    max_value = 0
+    for i in range(len(Letters)):
+        max_value += (BASE-1) * BASE**i
+
+    return max_value - abs(term1+term2 - result)
 
 
-def evalFitness(chromosome: dict) -> int:
-    return evalOperationDist(chromosome)
+def evalFitness(alphabet: dict) -> int:
+    return evalOperationDist(alphabet)
 
 
-def makeSpecimen(quantity: int = 1):
+def makeSpecimen(quantity: int = 1) -> list:
     global Letters
 
+    Specimen.setFitnessEvalFunction(evalFitness)
+    population = []
     for i in range(quantity):
         specimenAlphabet = {}
         random.seed()
@@ -81,8 +84,9 @@ def makeSpecimen(quantity: int = 1):
         for value, letter in zip(myValue, Letters):
             specimenAlphabet[letter] = value
 
-        Specimen(specimenAlphabet, evalFitness)
+        population.append(Specimen(specimenAlphabet))
 
+    return population
 
 def getWordValue(alphabet: dict, word: str) -> int:
     value = ""
@@ -90,26 +94,8 @@ def getWordValue(alphabet: dict, word: str) -> int:
         value += str(alphabet[letter])
     return int(value)
 
-getExpression("send", 9567, "more", 1085, "money", 10652)
-makeSpecimen(100)
 
 
-
-best = Specimen.getBestSpecimen()
-print("\nBest Specimen:\n", best, sep="")
-send = getWordValue(best.chromosome, "send")
-more = getWordValue(best.chromosome, "more")
-money = getWordValue(best.chromosome, "money")
-print("SEND = ", send)
-print("MORE = ", more)
-print("MONEY = ", money)
-print("SEND + MORE = MONEY ?? ", send + more)
-print("Real Capability = ", abs(send + more - 10652))
-
-for x in GoodRoulette(Specimen.Population):
-    print(x)
-
-makeMutation(Specimen.Population, 5)
 
 
 # TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações

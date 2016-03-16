@@ -1,9 +1,13 @@
+#TODO arrumar o crossover
+# meu crossover ta com problema. Ele nao esta agindo da maneiro correta quando se quer mais de 1 filho.
+# Ele nao esta verificando se a troca eh tambem valida no parent2; assim, ha grande possibilidade de
+# se criar um filho nao valido(com valores repetidos para letras diferentes)
+
 import random
 import collections
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
 
-def cyclicCrossover(parent1:dict, parent2:dict, children:int=1):
+def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
     assert parent1 and parent2 and children in (1, 2)
     logging.debug("Parent1= " + str(parent1))
     logging.debug("Parent2= " + str(parent2))
@@ -43,16 +47,19 @@ def cyclicCrossover(parent1:dict, parent2:dict, children:int=1):
                 child[letter] = changed[value]
             else:
                 child[letter] = value
-        logging.debug("Child= " + str(child))
+        logging.debug("Child= {}\n".format(child))
         childs.append(child)
         parent = parent2
 
     return childs
 
 
+def main():
+    logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
+    x = {"a":8, "b":4, "c":7, "d":3, "e":6, "f":2, "g":5, "h":1, "i":0}
+    y = {"a":0, "b":1, "c":2, "d":3, "e":4, "f":5, "g":6, "h":7, "i":8}
+    cyclicCrossover(x, y, children=2)
 
-x = {"a":8, "b":4, "c":7, "d":3, "e":6, "f":2, "g":5, "h":1, "i":0}
-y = {"a":0, "b":1, "c":2, "d":3, "e":4, "f":5, "g":6, "h":7, "i":8}
-cyclicCrossover(x, y, children=2)
-
+if __name__ == "__main__":
+    main()
 

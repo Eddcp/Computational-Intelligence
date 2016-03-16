@@ -7,11 +7,8 @@ import random
 
 # Tournament has a low "Selection Pressure" since you could reasonably choose
 # just low fitness individuals to "fight" with each other.
-def Tournament(population:list, tour:int=3, quantity:int=2) -> list:
+def Tournament(population:list, quantity:int, tour:int=3) -> list:
     chosen = random.sample(population, tour)
-
-    for x in chosen:
-        print(x)
 
     betters = []
     for i in range(quantity):
@@ -32,7 +29,7 @@ def Tournament(population:list, tour:int=3, quantity:int=2) -> list:
 # This is a bad implementation because the size of roulette is proportional to
 # the range of fitness. In a problem where fitness can have a pretty high value,
 # the roulette's size becomes impracticable.
-def BadRoulette(population:list, quantity:int=2) -> list:
+def BadRoulette(population:list, quantity:int) -> list:
     roulette = []
     for specimen in population:
         roulette.extend([specimen] * specimen.fitness)
@@ -43,7 +40,7 @@ def BadRoulette(population:list, quantity:int=2) -> list:
 
 # This is a better implementation of the Roulette Selection because roulette's size
 # depends only on the number of individuals.
-def GoodRoulette(population:list, quantity:int=2) -> list:
+def GoodRoulette(population:list, quantity:int) -> list:
     roulette = []
     summation = 0
     for specimen in population:
@@ -65,3 +62,16 @@ def GoodRoulette(population:list, quantity:int=2) -> list:
     return chosen
 
 
+def getTopX(population:list, quantity:int):
+    new_pop = sorted(population, reverse=True)
+    return new_pop[:quantity]
+
+
+
+def getBestSpecimen(population:list):
+    assert population, "Empty Population!"
+    best = population[0]
+    for specimen in population:
+        if specimen > best:
+            best = specimen
+    return best
