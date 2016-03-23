@@ -5,19 +5,19 @@
 import random
 
 
+
+
 # Tournament has a low "Selection Pressure" since you could reasonably choose
 # just low fitness individuals to "fight" with each other.
 def Tournament(population:list, quantity:int, tour:int=3) -> list:
-    chosen = random.sample(population, tour)
-
     betters = []
-    for i in range(quantity):
+    for _ in range(quantity):
+        chosen = random.sample(population, tour)
         best = chosen[0]
         for specimen in chosen:
             if specimen > best:
                 best = specimen
         betters.append(best)
-        chosen.remove(best)
     return betters
 
 
@@ -62,7 +62,7 @@ def GoodRoulette(population:list, quantity:int) -> list:
     return chosen
 
 
-def getTopX(population:list, quantity:int):
+def TruncationSelection(population:list, quantity:int):
     new_pop = sorted(population, reverse=True)
     return new_pop[:quantity]
 

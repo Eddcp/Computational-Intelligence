@@ -9,10 +9,12 @@ BASE = 10
 NUMBERS = range(BASE)
 
 Letters = ""
+MAX_VALUE = 0
 PossibleValues = []
 
 Term = collections.namedtuple("Term", ["word", "value"])
 Terms = {}
+
 
 
 def getExpression(first, firstValue, second, secondValue, result, resultValue):
@@ -20,6 +22,7 @@ def getExpression(first, firstValue, second, secondValue, result, resultValue):
     global NUMBERS
     global PossibleValues
     global Terms
+    global MAX_VALUE
 
     Terms = dict(first=Term(first, firstValue), second=Term(second, secondValue), result=Term(result, resultValue))
 
@@ -29,6 +32,10 @@ def getExpression(first, firstValue, second, secondValue, result, resultValue):
             if letter in Letters:
                 continue
             Letters += letter
+
+    MAX_VALUE = 0
+    for i in range(len(Letters)):
+        MAX_VALUE += (BASE-1) * BASE**i
 
     PossibleValues = list(itertools.permutations(NUMBERS, len(Letters)))
     logging.debug("Number of permutations = {}".format(len(PossibleValues)))
@@ -58,11 +65,7 @@ def evalOperationDist(alphabet: dict) -> int:
     term2 = getWordValue(alphabet, Terms["second"].word)
     result = getWordValue(alphabet, Terms["result"].word)
 
-    max_value = 0
-    for i in range(len(Letters)):
-        max_value += (BASE-1) * BASE**i
-
-    return max_value - abs(term1+term2 - result)
+    return MAX_VALUE - abs(term1+term2 - result)
 
 
 def evalFitness(alphabet: dict) -> int:
@@ -76,7 +79,6 @@ def makeSpecimen(quantity: int = 1) -> list:
     population = []
     for i in range(quantity):
         specimenAlphabet = {}
-        random.seed()
         i = random.randint(0, len(PossibleValues))
         myValue = PossibleValues[i]
         del PossibleValues[i]
@@ -94,8 +96,10 @@ def getWordValue(alphabet: dict, word: str) -> int:
         value += str(alphabet[letter])
     return int(value)
 
+def CA_str(self):
+    s = "Chromosome={}  Fitness={}".format(sorted(self.chromosome.items()), self.fitness)
+    return s
 
-
-
+Specimen.__str__ = CA_str
 
 # TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações
