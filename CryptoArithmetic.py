@@ -35,6 +35,7 @@ def getExpression(first, firstValue, second, secondValue, result, resultValue):
     MAX_VALUE = 0
     for i in range(len(Letters)):
         MAX_VALUE += (BASE-1) * BASE**i
+    MAX_VALUE = 100000
 
 
 # returns distance between the given real result and the "local" specimen's result (mapped)

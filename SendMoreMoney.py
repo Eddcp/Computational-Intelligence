@@ -21,6 +21,16 @@ class LogFilter(logging.Filter):
             return True
 
 
+def debug_execs(population):
+    debug_execs.runs += 1
+    best = Selection.getBestSpecimen(population)
+    if best.fitness == CryptoArithmetic.MAX_VALUE:
+        debug_execs.hits += 1
+    return debug_execs.hits
+debug_execs.hits = 0
+debug_execs.runs = 0
+
+
 def main():
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     my_log()
@@ -29,8 +39,6 @@ def main():
     for i in range(40):
         CryptoArithmetic.getExpression("send", 9567, "more", 1085, "money", 10652)
         population = CryptoArithmetic.makeSpecimen(40)
-        logging.debug('\n\tINITIAL POPULATION')
-        GA.debug(population)
 
         population = GA.init(population)
         best = Selection.getBestSpecimen(population)
@@ -53,25 +61,22 @@ def AG_padrao(runs:int):
 
         GA.REINSERTION = Selection.TruncationSelection
         population = GA.init(population, generations=50, birthRate=60, mutationRate=5)
-        best = Selection.getBestSpecimen(population)
-        if best.fitness == CryptoArithmetic.MAX_VALUE:
-            hits += 1
-    assert print("\n  the GA found the answer {} times in {}!".format(hits, runs)) is None
+        hits = debug_execs(population)
+    print("\n  the GA found the answer {} times in {}!".format(hits, runs))
 
 
 def AG_pequeno():
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+    logging.basicConfig(level=logging.DEBUG, format='%(message)s', filename="AG_pequeno.txt", filemode='w')
     my_log()
 
     CryptoArithmetic.getExpression("send", 9567, "more", 1085, "money", 10652)
     population = CryptoArithmetic.makeSpecimen(10)
-    logging.debug('\n\tINITIAL POPULATION')
-    GA.debug(population)
 
     Selection.Tournament.__defaults__ = (2,)
     #GA.SELECT = Selection.Tournament
     GA.REINSERTION = Selection.TruncationSelection
     population = GA.init(population, generations=10, birthRate=40, mutationRate=10)
+    debug_execs(population)
 
 
 def my_log():
@@ -86,7 +91,7 @@ if __name__ == "__main__":
     #tracemalloc.start()
 
     # cProfile.run('AG_padrao(100)')
-    AG_padrao(100)
+    AG_padrao(20)
     # snapshot = tracemalloc.take_snapshot()
     # top_stats = snapshot.statistics('lineno')
     #

@@ -5,7 +5,7 @@ from Mutation import *
 
 from CryptoArithmetic import getWordValue
 
-SELECT = Tournament
+SELECT = GoodRoulette
 CROSSOVER = cyclicCrossover
 REINSERTION = TruncationSelection
 MUTATION = dictMutation
@@ -14,8 +14,19 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
          childrenPerParents:int=1) -> list:
 
     populationSize = populationSize if populationSize else len(population)
+
+
+    logging.debug('\n   INITIATING GENETIC ALGORITHM\n')
+    logging.debug('Population Size: %s', populationSize)
+    logging.debug('Number of Generations: %s', generations)
+    logging.debug('Crossover Rate: %s%%', birthRate)
+    logging.debug('Mutation Rate: %s%%\n', mutationRate)
+
     xmen = int(math.ceil(populationSize * mutationRate / 100))
     births = int(math.ceil(populationSize * birthRate / 100))
+
+    logging.debug('\n  Initial POPULATION')
+    debug(population)
 
     for time in range(generations):
         children = []
@@ -42,8 +53,7 @@ def debug(population:list):
         for x in population:
             logging.debug(x)
 
-    #best = getBestSpecimen(population)
-    best = population[0]
+    best = getBestSpecimen(population)
     logging.debug("\n\t* THE BEST *\n%s", best)
     send = getWordValue(best.chromosome, "send")
     more = getWordValue(best.chromosome, "more")
