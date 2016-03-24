@@ -4,13 +4,15 @@ import Selection
 import copy
 import logging
 import random
+import tracemalloc
+import cProfile
 
 # format='%(funcName)s(): %(message)s'
 
 class LogFilter(logging.Filter):
     def filter(self, record):
         if record.funcName is "cyclicCrossover":
-            return False
+            return True
         elif record.funcName is "getExpression":
             return False
         elif record.funcName is "dictMutation":
@@ -37,12 +39,12 @@ def main():
     print("\n  the GA found the answer {} times in 100!".format(hits))
 
 
-def AG_padrao():
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s', filename='logs/oi.txt')
+def AG_padrao(runs:int):
+    #logging.basicConfig(level=logging.INFO, format='%(message)s')
     CryptoArithmetic.getExpression("send", 9567, "more", 1085, "money", 10652)
 
     hits = 0
-    for i in range(50):
+    for i in range(runs):
         #file = 'ag' + str(i) + '.txt'
         #logging.basicConfig(level=logging.DEBUG, format='%(message)s', filename=file)
         #random.seed(i)
@@ -50,11 +52,11 @@ def AG_padrao():
         population = CryptoArithmetic.makeSpecimen(100)
 
         GA.REINSERTION = Selection.TruncationSelection
-        population = GA.init(population, generations=30, birthRate=60, mutationRate=5)
+        population = GA.init(population, generations=50, birthRate=60, mutationRate=5)
         best = Selection.getBestSpecimen(population)
-        if best == CryptoArithmetic.MAX_VALUE:
+        if best.fitness == CryptoArithmetic.MAX_VALUE:
             hits += 1
-    print("\n  the GA found the answer {} times in 100!".format(hits))
+    assert print("\n  the GA found the answer {} times in {}!".format(hits, runs)) is None
 
 
 def AG_pequeno():
@@ -79,6 +81,17 @@ def my_log():
 
 
 if __name__ == "__main__":
-    main()
+
+    #logging.basicConfig(level=logging.DEBUG)
+    #tracemalloc.start()
+
+    # cProfile.run('AG_padrao(100)')
+    AG_padrao(100)
+    # snapshot = tracemalloc.take_snapshot()
+    # top_stats = snapshot.statistics('lineno')
+    #
+    # print("[ Top 10 ]")
+    # for stat in top_stats[:10]:
+    #     print(stat)
 
 

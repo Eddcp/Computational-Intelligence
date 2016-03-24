@@ -10,7 +10,6 @@ NUMBERS = range(BASE)
 
 Letters = ""
 MAX_VALUE = 0
-PossibleValues = []
 
 Term = collections.namedtuple("Term", ["word", "value"])
 Terms = {}
@@ -18,14 +17,14 @@ Terms = {}
 
 
 def getExpression(first, firstValue, second, secondValue, result, resultValue):
-    global Letters
+    global Letters, NUMBERS
     global NUMBERS
-    global PossibleValues
     global Terms
     global MAX_VALUE
 
     Terms = dict(first=Term(first, firstValue), second=Term(second, secondValue), result=Term(result, resultValue))
 
+    Letters = ''
     words = [first, second, result]
     for word in words:
         for letter in word:
@@ -36,9 +35,6 @@ def getExpression(first, firstValue, second, secondValue, result, resultValue):
     MAX_VALUE = 0
     for i in range(len(Letters)):
         MAX_VALUE += (BASE-1) * BASE**i
-
-    PossibleValues = list(itertools.permutations(NUMBERS, len(Letters)))
-    logging.debug("Number of permutations = {}".format(len(PossibleValues)))
 
 
 # returns distance between the given real result and the "local" specimen's result (mapped)
@@ -58,18 +54,19 @@ def evalResultsDist(alphabet: dict) -> int:
 # returns how far the specimen's result (mapped) is from the result evaluated through the expression
 def evalOperationDist(alphabet: dict) -> int:
     global Terms
-    global Letters
-    global BASE
 
-    term1 = getWordValue(alphabet, Terms["first"].word)
-    term2 = getWordValue(alphabet, Terms["second"].word)
-    result = getWordValue(alphabet, Terms["result"].word)
+    term1_value = getWordValue(alphabet, Terms["first"].word)
+    term2_value = getWordValue(alphabet, Terms['second'].word)
+    result = getWordValue(alphabet, Terms['result'].word)
 
-    return MAX_VALUE - abs(term1+term2 - result)
+    dist = abs(term1_value + term2_value - result)
+
+    return MAX_VALUE - dist
 
 
 def evalFitness(alphabet: dict) -> int:
     return evalOperationDist(alphabet)
+
 
 
 def makeSpecimen(quantity: int = 1) -> list:
@@ -79,9 +76,7 @@ def makeSpecimen(quantity: int = 1) -> list:
     population = []
     for i in range(quantity):
         specimenAlphabet = {}
-        i = random.randint(0, len(PossibleValues))
-        myValue = PossibleValues[i]
-        del PossibleValues[i]
+        myValue = getPossibleValue()
 
         for value, letter in zip(myValue, Letters):
             specimenAlphabet[letter] = value
@@ -96,6 +91,7 @@ def getWordValue(alphabet: dict, word: str) -> int:
         value += str(alphabet[letter])
     return int(value)
 
+
 def CA_str(self):
     s = "Chromosome={}  Fitness={}".format(sorted(self.chromosome.items()), self.fitness)
     return s
@@ -103,3 +99,10 @@ def CA_str(self):
 Specimen.__str__ = CA_str
 
 # TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações
+
+
+def getPossibleValue():
+    global NUMBERS
+
+    numbers = list(NUMBERS)
+    return random.sample(numbers, len(numbers))

@@ -12,14 +12,12 @@ import random
 def Tournament(population:list, quantity:int, tour:int=3) -> list:
     betters = []
     for _ in range(quantity):
-        chosen = random.sample(population, tour)
-        best = chosen[0]
-        for specimen in chosen:
-            if specimen > best:
-                best = specimen
+        chosen = []
+        for _ in range(tour):
+            chosen.append(random.choice(population))
+        best = getBestSpecimen(chosen)
         betters.append(best)
     return betters
-
 
 # -------------------------
 # Roulette has a high "Selection Pressure" because the chance of being chosen
@@ -69,7 +67,6 @@ def TruncationSelection(population:list, quantity:int):
 
 
 def getBestSpecimen(population:list):
-    assert population, "Empty Population!"
     best = population[0]
     for specimen in population:
         if specimen > best:

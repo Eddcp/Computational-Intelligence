@@ -7,10 +7,13 @@ import random
 import collections
 import logging
 
+import CryptoArithmetic
+
 def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
     assert parent1 and parent2 and children in (1, 2)
-    logging.debug("Parent1= " + my_str(parent1))
-    logging.debug("Parent2= " + my_str(parent2))
+    logging.debug("Parent1= %s", parent1)
+    logging.debug("Parent2= %s", parent2)
+
 
     # # randomizing where to start the crossover
     # # trying to get a position that can be changed
@@ -38,7 +41,7 @@ def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
                 value1 = value2
                 value2 = parent2[letter]
                 break
-    logging.debug("{} letters changed. {}".format(len(changed), changed))
+    logging.debug("%s letters changed. %s", len(changed), changed)
 
     # creating child
     childs = []
@@ -51,7 +54,7 @@ def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
                 child[letter] = changed[value]
             else:
                 child[letter] = value
-        logging.debug("Child=   {}".format(my_str(child)))
+        logging.debug("Child=   %s", child)
         childs.append(child)
         parent = parent2
     logging.debug('')
@@ -69,5 +72,7 @@ if __name__ == "__main__":
     main()
 
 def my_str(d:dict):
-    return str(sorted(d.items()))
+    return sorted(d.items())
+
+
 

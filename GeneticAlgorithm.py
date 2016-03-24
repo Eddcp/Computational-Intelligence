@@ -29,13 +29,13 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
 
         population = REINSERTION(population, populationSize)
 
-        logging.debug("***************\n  GENERATION {}".format(time+1))
+        logging.debug("***************\n  GENERATION %s", time+1)
         debug(population) if logging.DEBUG else None
 
     return population
 
 def debug(population:list):
-    logging.debug('  POPULATION of {} Specimens'.format(len(population)))
+    logging.debug('  POPULATION of %s Specimens', len(population))
     if len(population) > 15:
         print_only_fitness(population)
     else:
@@ -44,14 +44,14 @@ def debug(population:list):
 
     #best = getBestSpecimen(population)
     best = population[0]
-    logging.debug("\n\t* THE BEST *\n{}".format(best))
+    logging.debug("\n\t* THE BEST *\n%s", best)
     send = getWordValue(best.chromosome, "send")
     more = getWordValue(best.chromosome, "more")
     money = getWordValue(best.chromosome, "money")
-    logging.debug("SEND = {}, MORE = {}, MONEY = {}".format(send, more, money))
-    logging.debug("SEND + MORE = {}".format(send + more))
-    logging.debug('(SEND + MORE) - MONEY = {}'.format(abs(send + more - money)))
-    # logging.debug("Real Capability = {}".format(abs(send + more - 10652)))
+    logging.debug("SEND = %s, MORE = %s, MONEY = %s", send, more, money)
+    logging.debug("SEND + MORE = %s", send + more)
+    logging.debug('(SEND + MORE) - MONEY = %s', abs(send + more - money))
+    # logging.debug("Real Capability = %s", abs(send + more - 10652)))
     logging.debug("****************\n")
 
 
