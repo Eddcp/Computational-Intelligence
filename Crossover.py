@@ -9,54 +9,80 @@ import logging
 
 import CryptoArithmetic
 
-def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
+def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
     assert parent1 and parent2 and children in (1, 2)
     logging.debug("Parent1= %s", parent1)
     logging.debug("Parent2= %s", parent2)
 
+    pos = random.randint(0, len(parent1)-1)
 
-    # # randomizing where to start the crossover
-    # # trying to get a position that can be changed
-    # for _ in range(len(parent1)):
-    #     letter = random.choice(list(parent1.keys()))
-    #     value1 = parent1[letter]
-    #     value2 = parent2[letter]
-    #     if value1 is not value2:
-    #         # already got a position that can be changed
-    #         break
+    p1 = parent1
+    p2 = parent2
 
-    letter = random.choice(list(parent1.keys()))
-    value1 = parent1[letter]
-    value2 = parent2[letter]
-
-    # seeing what can be changed in both parents in order to create a valid child.
-    # making a "cyclic permutation"
     changed = collections.OrderedDict()
-    for _ in range(len(parent1)):
-        if value1 in changed:
+    before = p1[pos]
+    after = p2[pos]
+    hasDuplicates = True
+    while hasDuplicates:
+        changes = list(changed.items())
+        if changes and changes[0][0] == changes[-1][1]:
+            # chegou-se em um ciclo de alteracoes
+            hasDuplicates = False
             break
-        changed[value1] = value2
-        for letter in parent1.keys():
-            if parent1[letter] == value2:
-                value1 = value2
-                value2 = parent2[letter]
+
+        if after in changed:
+            changed[before] = changes[0][0]
+        else:
+            changed[before] = after
+
+        # ja faz as alteracoes nos vetores
+        f1 = p1[:]
+        f2 = p2[:]
+        for i in range(len(p1)):
+            if f1[i] == before:
+                f1[i] = after
+            if f2[i] == before:
+                f2[i] = after
+
+        for i in range(len(p1)):
+            if i == pos:
+                continue
+
+            if f1[i] == after:
+                before = after
+                after = p2[i]
+                pos = i
+                hasDuplicates = True
                 break
+            elif f2[i] == after:
+                before = after
+                after = p1[i]
+                pos = i
+                hasDuplicates = True
+                break
+            aux = before
+            before = after
+            after = aux
+
     logging.debug("%s letters changed. %s", len(changed), changed)
 
-    # creating child
-    childs = []
-    parent = parent1
-    for _ in range(children):
-        child = {}
-        for letter in parent:
-            value = parent[letter]
-            if value in changed:
-                child[letter] = changed[value]
-            else:
-                child[letter] = value
-        logging.debug("Child=   %s", child)
-        childs.append(child)
-        parent = parent2
+    child1 = parent1[:]
+    child2 = parent2[:]
+    for i in range(len(parent1)):
+        v1 = child1[i]
+        v2 = child2[i]
+        if v1 in changed:
+            child1[i] = changed[v1]
+        if v2 in changed:
+            child2[i] = changed[v2]
+
+    if children == 2:
+        logging.debug("Child=   %s", child1)
+        logging.debug("Child=   %s", child2)
+        childs = (child1, child2)
+    elif children == 1:
+        childs = (child1)
+        logging.debug("Child=   %s", child1)
     logging.debug('')
 
     return childs
