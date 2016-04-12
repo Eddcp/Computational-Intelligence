@@ -62,17 +62,33 @@ def cyclicCrossover(parent1:dict, parent2:dict, children:int=1) -> list:
     return childs
 
 
+def dictCrossover(parent1:dict, parent2:dict, children:int=2):
+    p1_items = sorted(parent1.items())
+    p1 = [v for (_, v) in p1_items]
+
+    p2_items = sorted(parent2.items())
+    p2 = [v for (_, v) in p2_items]
+
+    keys = [k for (k, _) in p1_items]
+
+    children = PMX(p1, p2)
+    children_dicts = [dict() for _ in range(len(children))]
+
+    for c in range(len(children)):
+        for i, k in enumerate(keys):
+            children_dicts[c][k] = children[c][i]
+
+    return children_dicts
 def main():
     logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
     x = {"a":8, "b":4, "c":7, "d":3, "e":6, "f":2, "g":5, "h":1, "i":0}
     y = {"a":0, "b":1, "c":2, "d":3, "e":4, "f":5, "g":6, "h":7, "i":8}
-    cyclicCrossover(x, y, children=2)
+    dictCrossover(x, y, children=2)
 
 if __name__ == "__main__":
     main()
 
 def my_str(d:dict):
     return sorted(d.items())
-
 
 
