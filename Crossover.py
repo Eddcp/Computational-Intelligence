@@ -105,6 +105,62 @@ def dictCrossover(parent1:dict, parent2:dict, children:int=2):
             children_dicts[c][k] = children[c][i]
 
     return children_dicts
+
+
+
+def PMX(parent1:list, parent2:list, children:int=2):
+
+    logging.debug("Parent1= %s", parent1)
+    logging.debug("Parent2= %s", parent2)
+
+    begin = random.randint(0, len(parent1)-1)
+    end = random.randint(begin+1, len(parent2))
+
+    end = 1 if end is 0 else end
+
+    logging.debug("Troca feita no seguinte intervalo (%s, %s)", begin, end-1)
+
+    p1 = parent1[:]
+    p2 = parent2[:]
+
+    swap1 = set()
+    rest1 = set()
+    swap2 = set()
+    rest2 = set()
+    for i in range(len(parent1)):
+        if i < begin or i > end:
+            rest1.add(p1[i])
+            rest2.add(p2[i])
+        else:
+            swap1.add(p1[i])
+            swap2.add(p2[i])
+
+    dup1 = rest1 & swap2
+    dup2 = rest2 & swap1
+    left1 = rest1 - dup1
+    left2 = rest2 - dup2
+    possibles1 = (dup2 | rest2) - left1
+    possibles2 = (dup1 | rest1) - left2
+
+    for i in range(len(p1)):
+        if i >= begin and i < end:
+            aux = p1[i]
+            p1[i] = p2[i]
+            p2[i] = aux
+        elif p1[i] in dup1:
+            p1[i] = possibles1.pop()
+        elif p2[i] in dup2:
+            p2[i] = possibles2.pop()
+
+    logging.debug("Child=   %s", p1)
+    logging.debug("Child=   %s", p2)
+    logging.debug('')
+
+    return (p1, p2)
+
+
+
+
 def main():
     logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
     x = {"a":8, "b":4, "c":7, "d":3, "e":6, "f":2, "g":5, "h":1, "i":0}
