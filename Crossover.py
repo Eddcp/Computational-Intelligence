@@ -1,13 +1,9 @@
-#TODO arrumar o crossover
-# meu crossover ta com problema. Ele nao esta agindo da maneiro correta quando se quer mais de 1 filho.
-# Ele nao esta verificando se a troca eh tambem valida no parent2; assim, ha grande possibilidade de
-# se criar um filho nao valido(com valores repetidos para letras diferentes)
 
 import random
 import collections
 import logging
 
-import CryptoArithmetic
+
 
 def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
     assert parent1 and parent2 and children in (1, 2)
@@ -80,7 +76,7 @@ def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
         logging.debug("Child=   %s", child1)
         logging.debug("Child=   %s", child2)
         childs = (child1, child2)
-    elif children == 1:
+    else:
         childs = (child1)
         logging.debug("Child=   %s", child1)
     logging.debug('')
@@ -109,55 +105,59 @@ def dictCrossover(parent1:dict, parent2:dict, children:int=2):
 
 
 def PMX(parent1:list, parent2:list, children:int=2):
-
     logging.debug("Parent1= %s", parent1)
     logging.debug("Parent2= %s", parent2)
 
     begin = random.randint(0, len(parent1)-1)
     end = random.randint(begin+1, len(parent2))
-
     end = 1 if end is 0 else end
 
-    logging.debug("Troca feita no seguinte intervalo (%s, %s)", begin, end-1)
+    logging.debug("Swapped Range (%s, %s)", begin, end-1)
 
-    p1 = parent1[:]
-    p2 = parent2[:]
+    p1, p2 = parent1, parent2
+    child1, child2 = parent1[:], parent2[:]
 
-    swap1 = set()
-    rest1 = set()
-    swap2 = set()
-    rest2 = set()
+    swap1, not_swap1 = set(), set()
+    swap2, not_swap2 = set(), set()
     for i in range(len(parent1)):
-        if i < begin or i > end:
-            rest1.add(p1[i])
-            rest2.add(p2[i])
+        if i < begin or i > end-1:
+            not_swap1.add(p1[i])
+            not_swap2.add(p2[i])
         else:
             swap1.add(p1[i])
             swap2.add(p2[i])
 
-    dup1 = rest1 & swap2
-    dup2 = rest2 & swap1
-    left1 = rest1 - dup1
-    left2 = rest2 - dup2
-    possibles1 = (dup2 | rest2) - left1
-    possibles2 = (dup1 | rest1) - left2
+    repeat1 = not_swap1 & swap2
+    repeat2 = not_swap2 & swap1
+    fixed1 = not_swap1 - repeat1
+    fixed2 = not_swap2 - repeat2
+    possibles1 = not_swap2 - fixed1
+    possibles2 = not_swap1 - fixed2
 
     for i in range(len(p1)):
         if i >= begin and i < end:
-            aux = p1[i]
-            p1[i] = p2[i]
-            p2[i] = aux
-        elif p1[i] in dup1:
-            p1[i] = possibles1.pop()
-        elif p2[i] in dup2:
-            p2[i] = possibles2.pop()
+            child1[i] = p2[i]
+            child2[i] = p1[i]
+        else:
+            v1, v2 = p1[i], p2[i]
+            if v1 in repeat1:
+                if v2 in possibles1:
+                    child1[i] = v2
+                    possibles1.discard(v2)
+                else:
+                    child1[i] = possibles1.pop()
+            if v2 in repeat2:
+                if v1 in possibles2:
+                    child2[i] = v1
+                    possibles2.discard(v1)
+                else:
+                    child2[i] = possibles2.pop()
 
-    logging.debug("Child=   %s", p1)
-    logging.debug("Child=   %s", p2)
+    logging.debug("Child=   %s", child1)
+    logging.debug("Child=   %s", child2)
     logging.debug('')
-
-    return (p1, p2)
-
+    return (child1, child2)
+# END pmx()
 
 
 
