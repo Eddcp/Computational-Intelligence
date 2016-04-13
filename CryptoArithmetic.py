@@ -10,70 +10,56 @@ NUMBERS = range(BASE)
 
 Letters = ""
 MAX_VALUE = 0
+max_word_size = 0
+Terms = []
+Result = None
 
-Term = collections.namedtuple("Term", ["word", "value"])
-Terms = {}
 
-
-
-def getExpression(first, firstValue, second, secondValue, result, resultValue):
-    global Letters, NUMBERS
-    global NUMBERS
+def getExpression(result, *terms):
+    global Letters
     global Terms
-    global MAX_VALUE
+    global max_word_size
+    global Result
 
-    Terms = dict(first=Term(first, firstValue), second=Term(second, secondValue), result=Term(result, resultValue))
+    print(result)
+    Result = result
 
     Letters = ''
-    words = [first, second, result]
+    words = list(result) + list(terms)
     for word in words:
         for letter in word:
             if letter in Letters:
                 continue
             Letters += letter
+    Terms = terms
 
+    max_word_size = len(result)
     MAX_VALUE = 0
-    for i in range(len(Letters)):
+    for i in range(max_word_size):
         MAX_VALUE += (BASE-1) * BASE**i
-    MAX_VALUE = 100000
+    Specimen.max_fitness = MAX_VALUE
 
 
-# returns distance between the given real result and the "local" specimen's result (mapped)
-def evalResultsDist(alphabet: dict) -> int:
-    global Terms
-
-    localValue = getWordValue(alphabet, Terms["result"].word)
-    realValue = Terms["result"].value
-
-    # print("Meu Resultado =", localValue)
-    # print("Resultado Esperado =", realValue)
-    dist = abs(localValue - realValue)
-    # print("Distancia = ", dist)
-    return dist
 
 
 # returns how far the specimen's result (mapped) is from the result evaluated through the expression
-def evalOperationDist(alphabet: dict) -> int:
+def evalResultsDist(alphabet: dict) -> int:
     global Terms
+    global Result
 
-    term1_value = getWordValue(alphabet, Terms["first"].word)
-    term2_value = getWordValue(alphabet, Terms['second'].word)
-    result = getWordValue(alphabet, Terms['result'].word)
+    terms_value = (getWordValue(alphabet, x) for x in Terms)
+    result = getWordValue(alphabet, Result)
 
-    dist = abs(term1_value + term2_value - result)
+    dist = abs(sum(terms_value) - result)
 
-    return MAX_VALUE - dist
-
-
-def evalFitness(alphabet: dict) -> int:
-    return evalOperationDist(alphabet)
+    return Specimen.max_fitness - dist
 
 
 
 def makeSpecimen(quantity: int = 1) -> list:
     global Letters
 
-    Specimen.setFitnessEvalFunction(evalFitness)
+    Specimen.setFitnessEvalFunction(evalResultsDist)
     population = []
     for i in range(quantity):
         specimenAlphabet = {}
@@ -96,10 +82,7 @@ def getWordValue(alphabet: dict, word: str) -> int:
 def CA_str(self):
     s = "Chromosome={}  Fitness={}".format(sorted(self.chromosome.items()), self.fitness)
     return s
-
 Specimen.__str__ = CA_str
-
-# TODO Seleção(Torneio, Roleta); Crossover; Mutação; Gerações
 
 
 def getPossibleValue():

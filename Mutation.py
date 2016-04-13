@@ -4,7 +4,6 @@
 import random
 import logging
 from Specimen import Specimen
-from CryptoArithmetic import evalFitness
 
 
 

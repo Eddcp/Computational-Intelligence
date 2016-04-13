@@ -12,8 +12,7 @@ def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
 
     pos = random.randint(0, len(parent1)-1)
 
-    p1 = parent1
-    p2 = parent2
+    p1, p2 = parent1, parent2
 
     changed = collections.OrderedDict()
     before = p1[pos]
@@ -62,8 +61,7 @@ def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
 
     logging.debug("%s letters changed. %s", len(changed), changed)
 
-    child1 = parent1[:]
-    child2 = parent2[:]
+    child1, child2 = parent1[:], parent2[:]
     for i in range(len(parent1)):
         v1 = child1[i]
         v2 = child2[i]
@@ -172,5 +170,3 @@ if __name__ == "__main__":
 
 def my_str(d:dict):
     return sorted(d.items())
-
-

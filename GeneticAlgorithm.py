@@ -5,13 +5,13 @@ from Mutation import *
 
 from CryptoArithmetic import getWordValue
 
-SELECT = GoodRoulette
-CROSSOVER = cyclicCrossover
-REINSERTION = TruncationSelection
+SELECT = Tournament
+CROSSOVER = dictCrossover
+REINSERTION = BestInParentsAndChildren
 MUTATION = dictMutation
 
 def init(population:list, populationSize:int=None, generations:int=30, birthRate:int=60, mutationRate:int=5,
-         childrenPerParents:int=1) -> list:
+         childrenPerParents:int=2) -> list:
 
     populationSize = populationSize if populationSize else len(population)
 
@@ -22,7 +22,7 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
     logging.debug('Crossover Rate: %s%%', birthRate)
     logging.debug('Mutation Rate: %s%%\n', mutationRate)
 
-    xmen = int(math.ceil(populationSize * mutationRate / 100))
+    mutants = int(math.ceil(populationSize * mutationRate / 100))
     births = int(math.ceil(populationSize * birthRate / 100))
 
     logging.debug('\n  Initial POPULATION')
@@ -30,20 +30,25 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
 
     for time in range(generations):
         children = []
+        ancestors = population
         for _ in range(int(births / childrenPerParents)):
             parents = SELECT(population, 2)
             embryos = CROSSOVER(parents[0].chromosome, parents[1].chromosome, childrenPerParents)
             for e in embryos:
                 children.append(Specimen(e))
-        MUTATION(children, xmen)
-        population.extend(children)
 
-        population = REINSERTION(population, populationSize)
+        MUTATION(children, mutants)
+
+        population = REINSERTION(ancestors, children, populationSize)
 
         logging.debug("***************\n  GENERATION %s", time+1)
-        debug(population) if logging.DEBUG else None
+
+        solution = debug(population)
+        if solution:
+            return solution + population
 
     return population
+
 
 def debug(population:list):
     logging.debug('  POPULATION of %s Specimens', len(population))
@@ -63,6 +68,9 @@ def debug(population:list):
     logging.debug('(SEND + MORE) - MONEY = %s', abs(send + more - money))
     # logging.debug("Real Capability = %s", abs(send + more - 10652)))
     logging.debug("****************\n")
+
+    if best.fitness == Specimen.max_fitness:
+        return best
 
 
 def print_only_fitness(population:list):

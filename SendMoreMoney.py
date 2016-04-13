@@ -11,7 +11,7 @@ import cProfile
 
 class LogFilter(logging.Filter):
     def filter(self, record):
-        if record.funcName is "cyclicCrossover":
+        if record.funcName is "cyclicCrossover" or "dictCrossover":
             return True
         elif record.funcName is "getExpression":
             return False
@@ -49,7 +49,7 @@ def main():
 
 def AG_padrao(runs:int):
     #logging.basicConfig(level=logging.INFO, format='%(message)s')
-    CryptoArithmetic.getExpression("send", 9567, "more", 1085, "money", 10652)
+    CryptoArithmetic.getExpression("money", "send", "more")
 
     hits = 0
     for i in range(runs):
@@ -69,14 +69,13 @@ def AG_pequeno():
     logging.basicConfig(level=logging.DEBUG, format='%(message)s', filename="AG_pequeno.txt", filemode='w')
     my_log()
 
-    CryptoArithmetic.getExpression("send", 9567, "more", 1085, "money", 10652)
+    CryptoArithmetic.getExpression("money", "send", "more")
     population = CryptoArithmetic.makeSpecimen(10)
 
     Selection.Tournament.__defaults__ = (2,)
     #GA.SELECT = Selection.Tournament
-    GA.REINSERTION = Selection.TruncationSelection
     population = GA.init(population, generations=10, birthRate=40, mutationRate=10)
-    debug_execs(population)
+    #debug_execs(population)
 
 
 def my_log():
@@ -87,16 +86,16 @@ def my_log():
 
 if __name__ == "__main__":
 
-    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     #tracemalloc.start()
 
-    # cProfile.run('AG_padrao(100)')
-    AG_padrao(20)
+    #cProfile.run('AG_padrao(100)')
+    AG_pequeno()
     # snapshot = tracemalloc.take_snapshot()
     # top_stats = snapshot.statistics('lineno')
-    #
-    # print("[ Top 10 ]")
-    # for stat in top_stats[:10]:
-    #     print(stat)
+
+    #print("[ Top 10 ]")
+    #for stat in top_stats[:10]:
+    #    print(stat)
 
 

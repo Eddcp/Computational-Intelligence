@@ -4,6 +4,7 @@ import math
 
 class Specimen(object):
     fitnessEvalFunction = None
+    max_fitness = 0
 
     def __init__(self, chromosome):
         assert self.fitnessEvalFunction, "Set Fitness Evaluation Function first!"
