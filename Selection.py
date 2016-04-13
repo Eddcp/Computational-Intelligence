@@ -72,3 +72,16 @@ def getBestSpecimen(population:list):
         if specimen > best:
             best = specimen
     return best
+
+
+def BestInParentsAndChildren(parents:list, children:list, quantity:int):
+    population = parents + children
+    return TruncationSelection(population, quantity)
+
+
+def Elitism(parents:list, children:list, quantity:int, elitismRate:int=20):
+    elite_size = (quantity * elitismRate)/100
+    parents = TruncationSelection(parents, elite_size)
+    children_size = quantity - elite_size
+    return parents + children[:children_size]
+
