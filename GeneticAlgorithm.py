@@ -15,7 +15,6 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
 
     populationSize = populationSize if populationSize else len(population)
 
-
     logging.debug('\n   INITIATING GENETIC ALGORITHM\n')
     logging.debug('Population Size: %s', populationSize)
     logging.debug('Number of Generations: %s', generations)
@@ -40,17 +39,19 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
         MUTATION(children, mutants)
 
         population = REINSERTION(ancestors, children, populationSize)
-
         logging.debug("***************\n  GENERATION %s", time+1)
 
-        solution = debug(population)
-        if solution:
-            return solution + population
+        best = getBestSpecimen(population)
+        debug(population, best)
+        if best.fitness == Specimen.max_fitness:
+            return population
 
     return population
 
 
-def debug(population:list):
+def debug(population:list, best=None):
+    best = best if best else getBestSpecimen(population)
+
     logging.debug('  POPULATION of %s Specimens', len(population))
     if len(population) > 15:
         print_only_fitness(population)
@@ -58,7 +59,6 @@ def debug(population:list):
         for x in population:
             logging.debug(x)
 
-    best = getBestSpecimen(population)
     logging.debug("\n\t* THE BEST *\n%s", best)
     send = getWordValue(best.chromosome, "send")
     more = getWordValue(best.chromosome, "more")
@@ -68,9 +68,6 @@ def debug(population:list):
     logging.debug('(SEND + MORE) - MONEY = %s', abs(send + more - money))
     # logging.debug("Real Capability = %s", abs(send + more - 10652)))
     logging.debug("****************\n")
-
-    if best.fitness == Specimen.max_fitness:
-        return best
 
 
 def print_only_fitness(population:list):
