@@ -4,10 +4,12 @@ from Crossover import *
 from Mutation import *
 
 from CryptoArithmetic import getWordValue
+#from CryptoArithmetic import Terms, Result
+import CryptoArithmetic as CA
 
 SELECT = Tournament
 CROSSOVER = dictCrossover
-REINSERTION = BestInParentsAndChildren
+REINSERTION = BestsInParentsAndChildren
 MUTATION = dictMutation
 
 def init(population:list, populationSize:int=None, generations:int=30, birthRate:int=60, mutationRate:int=5,
@@ -25,8 +27,10 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
     births = int(math.ceil(populationSize * birthRate / 100))
 
     logging.debug('\n  Initial POPULATION')
+
     debug(population)
 
+    last_diversity_check = 0
     for time in range(generations):
         children = []
         ancestors = population
@@ -43,8 +47,13 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
 
         best = getBestSpecimen(population)
         debug(population, best)
-        if best.fitness == Specimen.max_fitness:
+        if best.fitness >= Specimen.max_fitness:
             return population
+
+        if (time - last_diversity_check >= 5) and (_population_diversity(population) == 1):
+            last_diversity_check = time
+            return population
+
 
     return population
 
@@ -80,3 +89,9 @@ def print_only_fitness(population:list):
             c = -1
         c+=1
     logging.debug(s)
+
+def _population_diversity(population:list) -> int:
+    fitness_values = set()
+    for ind in population:
+        fitness_values.add(ind.fitness)
+    return(len(fitness_values))
