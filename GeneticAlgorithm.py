@@ -45,7 +45,7 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
         population = REINSERTION(ancestors, children, populationSize)
         logging.debug("***************\n  GENERATION %s", time+1)
 
-        best = getBestSpecimen(population)
+        best = getWorstSpecimen(population)
         debug(population, best)
         if best.fitness >= Specimen.max_fitness:
             return population
@@ -59,7 +59,7 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
 
 
 def debug(population:list, best=None):
-    best = best if best else getBestSpecimen(population)
+    best = best if best else getWorstSpecimen(population)
 
     logging.debug('  POPULATION of %s Specimens', len(population))
     if len(population) > 15:
@@ -69,13 +69,7 @@ def debug(population:list, best=None):
             logging.debug(x)
 
     logging.debug("\n\t* THE BEST *\n%s", best)
-    send = getWordValue(best.chromosome, "send")
-    more = getWordValue(best.chromosome, "more")
-    money = getWordValue(best.chromosome, "money")
-    logging.debug("SEND = %s, MORE = %s, MONEY = %s", send, more, money)
-    logging.debug("SEND + MORE = %s", send + more)
-    logging.debug('(SEND + MORE) - MONEY = %s', abs(send + more - money))
-    # logging.debug("Real Capability = %s", abs(send + more - 10652)))
+    logging.debug(CA.CA_str_values(best.chromosome))
     logging.debug("****************\n")
 
 

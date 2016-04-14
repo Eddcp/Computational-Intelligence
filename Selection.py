@@ -1,10 +1,8 @@
 # these are Selection functions used in a Genetic Algorithm to, primarily,
 # select which individuals are going to procreate. But they can be used any
-# time you need a selection system.
+# time you need a selection method.
 
 import random
-
-
 
 
 # Tournament has a low "Selection Pressure" since you could reasonably choose
@@ -73,8 +71,15 @@ def getBestSpecimen(population:list):
             best = specimen
     return best
 
+def getWorstSpecimen(population:list):
+    worst = population[0]
+    for specimen in population:
+        if specimen < worst:
+            worst = specimen
+    return worst
 
-def BestInParentsAndChildren(parents:list, children:list, quantity:int):
+
+def BestsInParentsAndChildren(parents:list, children:list, quantity:int):
     population = parents + children
     return TruncationSelection(population, quantity)
 
