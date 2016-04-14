@@ -6,25 +6,25 @@ import logging
 import random
 import tracemalloc
 import cProfile
+from Specimen import Specimen
+import multiprocessing as mp
+import threading as th
+from multiprocessing.pool import ThreadPool
 
 # format='%(funcName)s(): %(message)s'
 
 class LogFilter(logging.Filter):
     def filter(self, record):
-        if record.funcName is "cyclicCrossover" or "dictCrossover":
+        if record.funcName is "debug":
             return True
-        elif record.funcName is "getExpression":
-            return False
-        elif record.funcName is "dictMutation":
-            return False
         else:
-            return True
+            return False
 
 
 def debug_execs(population):
     debug_execs.runs += 1
     best = Selection.getBestSpecimen(population)
-    if best.fitness == CryptoArithmetic.MAX_VALUE:
+    if best.fitness == Specimen.max_fitness:
         debug_execs.hits += 1
     return debug_execs.hits
 debug_execs.hits = 0
@@ -47,8 +47,8 @@ def main():
     print("\n  the GA found the answer {} times in 100!".format(hits))
 
 
-def AG_padrao(runs:int):
-    #logging.basicConfig(level=logging.INFO, format='%(message)s')
+def AG_padrao_serial(runs:int):
+    #logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     CryptoArithmetic.getExpression("money", "send", "more")
 
     hits = 0
@@ -58,11 +58,41 @@ def AG_padrao(runs:int):
         #random.seed(i)
 
         population = CryptoArithmetic.makeSpecimen(100)
-
-        GA.REINSERTION = Selection.TruncationSelection
         population = GA.init(population, generations=50, birthRate=60, mutationRate=5)
         hits = debug_execs(population)
-    print("\n  the GA found the answer {} times in {}!".format(hits, runs))
+    print("\n  Convergence of {}% !".format((hits/runs)*100))
+    print("  the GA found the answer {} times in {}!".format(hits, runs))
+
+def AG_padrao_parallel(runs:int):
+    #logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+    #my_log()
+    CryptoArithmetic.getExpression("money", "send", "more")
+
+    N_process = 7
+    hits = 0
+    tp = ThreadPool(processes=N_process)
+
+    results = mp.Queue(2*N_process)
+    completedTasks = 0
+
+    for i in range(N_process):
+        population = CryptoArithmetic.makeSpecimen(100)
+        tp.apply_async(GA.init, args= (population,), kwds={'generations':50, 'birthRate':60, 'mutationRate':5 }, callback=results.put)
+
+    while completedTasks < runs:
+        res = results.get()
+        completedTasks += 1
+        GA.debug(res)
+        hits = debug_execs(res)
+
+        if completedTasks >= runs:
+            break
+        population = CryptoArithmetic.makeSpecimen(100)
+        tp.apply_async(GA.init, args= (population,), kwds={'generations':50, 'birthRate':60, 'mutationRate':5 }, callback=results.put)
+    tp.terminate()
+    print("\n  Convergence of {}% !".format((hits/runs)*100))
+    print("  the GA found the answer {} times in {}!".format(hits, runs))
+
 
 
 def AG_pequeno():
@@ -86,11 +116,11 @@ def my_log():
 
 if __name__ == "__main__":
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     #tracemalloc.start()
 
     #cProfile.run('AG_padrao(100)')
-    AG_pequeno()
+    AG_padrao_parallel(10)
     # snapshot = tracemalloc.take_snapshot()
     # top_stats = snapshot.statistics('lineno')
 
