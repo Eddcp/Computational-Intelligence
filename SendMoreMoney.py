@@ -21,15 +21,20 @@ class LogFilter(logging.Filter):
             return False
 
 
-def debug_execs(population):
+def debug_execs(GA_result:dict):
+    best = GA_result['best']
+    generation = GA_result['generation']
     debug_execs.runs += 1
-    best = Selection.getBestSpecimen(population)
+    debug_execs.generations.append(generation)
+    debug_execs.generation = sum(debug_execs.generations) / len(debug_execs.generations)
     if best.fitness >= Specimen.max_fitness:
         debug_execs.hits += 1
         return best
     return None
 debug_execs.hits = 0
 debug_execs.runs = 0
+debug_execs.generations = []
+debug_execs.generation = 0
 
 
 def main():
@@ -59,7 +64,7 @@ def AG_padrao_serial(runs:int):
         #random.seed(i)
 
         population = CryptoArithmetic.makeSpecimen(100)
-        population = GA.init(population, generations=50, birthRate=60, mutationRate=5)
+        population = GA.init(population, num_generations=50, birthRate=60, mutationRate=5)
         hits = debug_execs(population)
     print("\n  Convergence of {}% !".format((hits/runs)*100))
     print("  the GA found the answer {} times in {}!".format(hits, runs))
@@ -79,21 +84,21 @@ def AG_padrao_parallel(runs:int):
     completedTasks = 0
 
     for i in range(min(N_process, runs)):
-        population = CryptoArithmetic.makeSpecimen(10)
-        tp.apply_async(GA.init, args= (population,), kwds={'generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
+        population = CryptoArithmetic.makeSpecimen(100)
+        tp.apply_async(GA.init, args= (population,), kwds={'num_generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
 
     while completedTasks < runs:
         res = results.get()
         completedTasks += 1
-        GA.debug(res)
+        GA.debug(res['population'], res['best'])
         solution = debug_execs(res)
         if solution:
             solutions.append(solution)
 
         if completedTasks >= runs:
             break
-        population = CryptoArithmetic.makeSpecimen(10)
-        tp.apply_async(GA.init, args= (population,), kwds={'generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
+        population = CryptoArithmetic.makeSpecimen(100)
+        tp.apply_async(GA.init, args= (population,), kwds={'num_generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
     tp.terminate()
     hits = debug_execs.hits
     print("\n  Convergence of {}% !".format((hits/runs)*100))
@@ -114,7 +119,7 @@ def AG_pequeno():
 
     Selection.Tournament.__defaults__ = (2,)
     #GA.SELECT = Selection.Tournament
-    population = GA.init(population, generations=10, birthRate=40, mutationRate=10)
+    population, generation, best = GA.init(population, num_generations=10, birthRate=40, mutationRate=10)
     #debug_execs(population)
 
 

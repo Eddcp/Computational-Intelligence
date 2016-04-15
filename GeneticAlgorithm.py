@@ -12,14 +12,14 @@ CROSSOVER = dictCrossover
 REINSERTION = BestsInParentsAndChildren
 MUTATION = dictMutation
 
-def init(population:list, populationSize:int=None, generations:int=30, birthRate:int=60, mutationRate:int=5,
-         childrenPerParents:int=2) -> list:
+def init(population:list, populationSize:int=None, num_generations:int=30, birthRate:int=60, mutationRate:int=5,
+         childrenPerParents:int=2) -> dict:
 
     populationSize = populationSize if populationSize else len(population)
 
     logging.debug('\n   INITIATING GENETIC ALGORITHM\n')
     logging.debug('Population Size: %s', populationSize)
-    logging.debug('Number of Generations: %s', generations)
+    logging.debug('Number of Generations: %s', num_generations)
     logging.debug('Crossover Rate: %s%%', birthRate)
     logging.debug('Mutation Rate: %s%%\n', mutationRate)
 
@@ -31,7 +31,9 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
     debug(population)
 
     last_diversity_check = 0
-    for time in range(generations):
+    generation = 0
+    best = None
+    for generation in range(1, num_generations+1):
         children = []
         ancestors = population
         for _ in range(int(births / childrenPerParents)):
@@ -43,19 +45,18 @@ def init(population:list, populationSize:int=None, generations:int=30, birthRate
         MUTATION(children, mutants)
 
         population = REINSERTION(ancestors, children, populationSize)
-        logging.debug("***************\n  GENERATION %s", time+1)
+        logging.debug("***************\n  GENERATION %s", generation)
 
-        best = getWorstSpecimen(population)
+        best = getBestSpecimen(population)
         debug(population, best)
         if best.fitness >= Specimen.max_fitness:
-            return population
+            break
 
-        if (time - last_diversity_check >= 5) and (_population_diversity(population) == 1):
-            last_diversity_check = time
-            return population
+        if (generation - last_diversity_check >= 5) and (_population_diversity(population) == 1):
+            last_diversity_check = generation
+            break
 
-
-    return population
+    return {'population':population, 'generation':generation, 'best':best}
 
 
 def debug(population:list, best=None):
@@ -83,6 +84,7 @@ def print_only_fitness(population:list):
             c = -1
         c+=1
     logging.debug(s)
+
 
 def _population_diversity(population:list) -> int:
     fitness_values = set()
