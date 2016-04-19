@@ -1,8 +1,11 @@
 import CryptoArithmetic
 import GeneticAlgorithm as GA
 import Selection
+import Crossover
 import copy
 import logging
+import timeit
+import time
 import random
 import tracemalloc
 import cProfile
@@ -21,20 +24,23 @@ class LogFilter(logging.Filter):
             return False
 
 
-def debug_execs(GA_result:dict):
-    best = GA_result['best']
-    generation = GA_result['generation']
-    debug_execs.runs += 1
-    debug_execs.generations.append(generation)
-    debug_execs.generation = sum(debug_execs.generations) / len(debug_execs.generations)
-    if best.fitness >= Specimen.max_fitness:
-        debug_execs.hits += 1
-        return best
-    return None
-debug_execs.hits = 0
-debug_execs.runs = 0
-debug_execs.generations = []
-debug_execs.generation = 0
+class DebugExecutions:
+    def __init__(self):
+        self.hits = 0
+        self.runs = 0
+        self.generations = []
+        self.generation = 0
+        
+    def inspect(self, GA_result:dict):
+        best = GA_result['best']
+        generation = GA_result['generation']
+        self.runs += 1
+        self.generations.append(generation)
+        self.generation = round(sum(self.generations) / len(self.generations))
+        if best.fitness >= Specimen.max_fitness:
+            self.hits += 1
+            return best
+        return None
 
 
 def main():
@@ -69,11 +75,12 @@ def AG_padrao_serial(runs:int):
     print("\n  Convergence of {}% !".format((hits/runs)*100))
     print("  the GA found the answer {} times in {}!".format(hits, runs))
 
-def AG_padrao_parallel(runs:int):
+
+
+
+def parallel_run(runs:int):
     #logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     #my_log()
-    #CryptoArithmetic.getExpression("donald", "gerald", result="robert")
-    CryptoArithmetic.getExpression("coca", "cola", result="oasis")
 
     solutions = []
     N_process = 7
@@ -83,30 +90,35 @@ def AG_padrao_parallel(runs:int):
     results = mp.Queue(2*N_process)
     completedTasks = 0
 
+    debug = DebugExecutions()
+
     for i in range(min(N_process, runs)):
         population = CryptoArithmetic.makeSpecimen(100)
-        tp.apply_async(GA.init, args= (population,), kwds={'num_generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
+        tp.apply_async(GA.StandardGA, args= (population,), callback=results.put)
 
     while completedTasks < runs:
         res = results.get()
         completedTasks += 1
         GA.debug(res['population'], res['best'])
-        solution = debug_execs(res)
+        solution = debug.inspect(res)
         if solution:
             solutions.append(solution)
 
         if completedTasks >= runs:
             break
         population = CryptoArithmetic.makeSpecimen(100)
-        tp.apply_async(GA.init, args= (population,), kwds={'num_generations':50, 'birthRate':80, 'mutationRate':10 }, callback=results.put)
+        tp.apply_async(GA.StandardGA, args= (population,), callback=results.put)
+    tp.close()
     tp.terminate()
-    hits = debug_execs.hits
-    print("\n  Convergence of {}% !".format((hits/runs)*100))
-    print("  the GA found the answer {} times in {}! \n".format(hits, runs))
-    for s in solutions:
-        print(s)
-        print(CryptoArithmetic.CA_str_values(s.chromosome))
 
+    hits = debug.hits
+    hits_rate = round((hits/runs)*100, 2)
+    logging.info("   CONVERGENCE of {}% ; {} times in {}!".format(hits_rate, hits, runs))
+    logging.info("   Needed, in general, {} Generations.".format(debug.generation))
+    for s in solutions:
+        logging.debug(s)
+        logging.debug(CryptoArithmetic.CA_str_values(s.chromosome))
+    #GA.init.first_time = True
 
 
 def AG_pequeno():
@@ -123,24 +135,90 @@ def AG_pequeno():
     #debug_execs(population)
 
 
+def permute_methods(runs:int):
+    tour2 = Selection.Tournament(2)
+    tour3 = Selection.Tournament(3)
+    cyclic = Crossover.DictCrossover(Crossover.cyclicCrossover)
+    pmx = Crossover.DictCrossover(Crossover.PMX)
+
+    selections = [Selection.GoodRoulette, tour2.run, tour3.run]
+    crossovers = [cyclic.run, pmx.run]
+    reinsertions = [Selection.BestsInParentsAndChildren, Selection.Elitism]
+
+    for select in selections:
+        for crossover in crossovers:
+            for reinsertion in reinsertions:
+                GA.SELECT = select
+                GA.CROSSOVER = crossover
+                GA.REINSERTION = reinsertion
+
+                logging.info('   METHODS')
+                logging.info('Selection: %s', select.__doc__)
+                logging.info('Crossover: %s', ' Cyclic ' if crossover == cyclic.run else ' PMX ')
+                logging.info('Reinsertion: %s', reinsertion.__doc__)
+
+                before = time.time()
+                parallel_run(runs)
+                after = time.time()
+
+                logging.info('TIME: %s\n', round(after - before, 2))
+
+
 def my_log():
     filter = LogFilter()
     log = logging.getLogger()
     log.addFilter(filter)
 
 
+def experiment1():
+
+    runs = 1000
+
+    logging.basicConfig(level=logging.INFO, format='%(message)s', filename='experimento1')
+
+    CryptoArithmetic.getExpression("send", "more", result="money")
+    logging.info("\n---------------\n\n    SEND + MORE = MONEY\n")
+    permute_methods(runs)
+
+    CryptoArithmetic.getExpression("eat", "that", result="apple")
+    logging.info("\n---------------\n\n    EAT + THAT = APPLE\n")
+    permute_methods(runs)
+
+    CryptoArithmetic.getExpression("cross", "roads", result="danger")
+    logging.info("\n---------------\n\n    CROSS + ROADS = DANGER\n")
+    permute_methods(runs)
+
+    CryptoArithmetic.getExpression("coca", "cola", result="oasis")
+    logging.info("\n---------------\n\n    COCA + COLA = OASIS\n")
+    permute_methods(runs)
+
+    CryptoArithmetic.getExpression("donald", "gerald", result="robert")
+    logging.info("\n---------------\n\n    DONALD + GERALD = ROBERT\n")
+    permute_methods(runs)
+
+
+
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    #CryptoArithmetic.getExpression("cross", "roads", result="danger")
+    #CryptoArithmetic.getExpression("eat", "that", result="apple")
+    #CryptoArithmetic.getExpression("coca", "cola", result="oasis")
+    #CryptoArithmetic.getExpression("donald", "gerald", result="robert")
+    CryptoArithmetic.getExpression("send", "more", result="money")
 
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
-    #tracemalloc.start()
 
-    #cProfile.run('AG_padrao(100)')
-    AG_padrao_parallel(1)
-    # snapshot = tracemalloc.take_snapshot()
-    # top_stats = snapshot.statistics('lineno')
 
-    #print("[ Top 10 ]")
-    #for stat in top_stats[:10]:
-    #    print(stat)
+
+    parallel_run(1000)
+    #experiment1()
+
+
+
+
+
+
+
+
+
 
 

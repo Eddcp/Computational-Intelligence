@@ -6,17 +6,19 @@ import logging
 
 
 def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
+    ''' Cyclic Crossover '''
+    #TODO ta bugando no CROSS + ROADS = DANGER
     assert parent1 and parent2 and children in (1, 2)
     logging.debug("Parent1= %s", parent1)
     logging.debug("Parent2= %s", parent2)
 
-    pos = random.randint(0, len(parent1)-1)
+    swap_pos = random.randint(0, len(parent1)-1)
 
     p1, p2 = parent1, parent2
 
     changed = collections.OrderedDict()
-    before = p1[pos]
-    after = p2[pos]
+    before = p1[swap_pos]
+    after = p2[swap_pos]
     hasDuplicates = True
     while hasDuplicates:
         changes = list(changed.items())
@@ -27,37 +29,41 @@ def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
 
         if after in changed:
             changed[before] = changes[0][0]
+            break
         else:
             changed[before] = after
 
-        # ja faz as alteracoes nos vetores
+
         f1 = p1[:]
         f2 = p2[:]
+        # faz alteracoes, que acabaram de ser adicionadas, nos "filhos"
         for i in range(len(p1)):
             if f1[i] == before:
                 f1[i] = after
             if f2[i] == before:
                 f2[i] = after
 
+        hasDuplicates = False
         for i in range(len(p1)):
-            if i == pos:
+            if hasDuplicates:
+                break
+            if i == swap_pos:
                 continue
 
             if f1[i] == after:
                 before = after
                 after = p2[i]
-                pos = i
+                swap_pos = i
                 hasDuplicates = True
-                break
             elif f2[i] == after:
                 before = after
                 after = p1[i]
-                pos = i
+                swap_pos = i
                 hasDuplicates = True
-                break
-            aux = before
-            before = after
-            after = aux
+
+        if not hasDuplicates and len(changed) == 1:
+            # faz um ciclo
+            changed[after] = before
 
     logging.debug("%s letters changed. %s", len(changed), changed)
 
@@ -82,27 +88,36 @@ def cyclicCrossover(parent1:list, parent2:list, children:int=2) -> list:
     return childs
 
 
-def dictCrossover(parent1:dict, parent2:dict, children:int=2):
-    p1_items = sorted(parent1.items())
-    p1 = [v for (_, v) in p1_items]
+class DictCrossover:
+    def __init__(self, crossover_function ):
+        self.crossover = crossover_function
+        self.__doc__ = crossover_function.__doc__
 
-    p2_items = sorted(parent2.items())
-    p2 = [v for (_, v) in p2_items]
+    def run(self, parent1:dict, parent2:dict, children:int=2):
+        p1_items = sorted(parent1.items())
+        p1 = [v for (_, v) in p1_items]
 
-    keys = [k for (k, _) in p1_items]
+        p2_items = sorted(parent2.items())
+        p2 = [v for (_, v) in p2_items]
 
-    children = PMX(p1, p2)
-    children_dicts = [dict() for _ in range(len(children))]
+        keys = [k for (k, _) in p1_items]
 
-    for c in range(len(children)):
-        for i, k in enumerate(keys):
-            children_dicts[c][k] = children[c][i]
+        children = self.crossover(p1, p2)
+        children_dicts = [dict() for _ in range(len(children))]
 
-    return children_dicts
+        for c in range(len(children)):
+            for i, k in enumerate(keys):
+                children_dicts[c][k] = children[c][i]
+
+        return children_dicts
+
+    def __str__(self):
+        return self.crossover.__doc__
 
 
 
 def PMX(parent1:list, parent2:list, children:int=2):
+    ''' PMX Crossover '''
     logging.debug("Parent1= %s", parent1)
     logging.debug("Parent2= %s", parent2)
 
@@ -161,9 +176,16 @@ def PMX(parent1:list, parent2:list, children:int=2):
 
 def main():
     logging.basicConfig(level=logging.DEBUG, format='%(funcName)s(): %(message)s')
-    x = {"a":8, "b":4, "c":7, "d":3, "e":6, "f":2, "g":5, "h":1, "i":0}
-    y = {"a":0, "b":1, "c":2, "d":3, "e":4, "f":5, "g":6, "h":7, "i":8}
-    dictCrossover(x, y, children=2)
+    p1 = [6,3,5,8,7]
+    p2 = [3,6,4,7,2]
+    #PMX(p1, p2)
+    children = cyclicCrossover(p1,p2)
+    for c in children:
+        counter = collections.Counter(c)
+        for x in counter:
+            if counter[x] > 1:
+                print('\n    DEU MERDA!')
+
 
 if __name__ == "__main__":
     main()

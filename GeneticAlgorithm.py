@@ -7,9 +7,9 @@ from CryptoArithmetic import getWordValue
 #from CryptoArithmetic import Terms, Result
 import CryptoArithmetic as CA
 
-SELECT = Tournament
-CROSSOVER = dictCrossover
-REINSERTION = BestsInParentsAndChildren
+SELECT = Tournament(3).run
+CROSSOVER = DictCrossover(cyclicCrossover).run
+REINSERTION = Elitism
 MUTATION = dictMutation
 
 def init(population:list, populationSize:int=None, num_generations:int=30, birthRate:int=60, mutationRate:int=5,
@@ -17,11 +17,20 @@ def init(population:list, populationSize:int=None, num_generations:int=30, birth
 
     populationSize = populationSize if populationSize else len(population)
 
-    logging.debug('\n   INITIATING GENETIC ALGORITHM\n')
-    logging.debug('Population Size: %s', populationSize)
-    logging.debug('Number of Generations: %s', num_generations)
-    logging.debug('Crossover Rate: %s%%', birthRate)
-    logging.debug('Mutation Rate: %s%%\n', mutationRate)
+    if init.first_time:
+        init.first_time = False
+        logging.info('\n   PROPERTIES')
+        logging.info('Population Size: %s', populationSize)
+        logging.info('Number of Generations: %s', num_generations)
+        logging.info('Crossover Rate: %s%%', birthRate)
+        logging.info('Mutation Rate: %s%%\n', mutationRate)
+
+        # logging.info('   METHODS')
+        # logging.info('Selection: %s', SELECT.__name__)
+        # logging.info('Crossover: %s', CROSSOVER.__name__)
+        # logging.info('Reinsertion: %s\n', REINSERTION.__name__)
+        #SELECT.__te
+
 
     mutants = int(math.ceil(populationSize * mutationRate / 100))
     births = int(math.ceil(populationSize * birthRate / 100))
@@ -36,7 +45,7 @@ def init(population:list, populationSize:int=None, num_generations:int=30, birth
     for generation in range(1, num_generations+1):
         children = []
         ancestors = population
-        for _ in range(int(births / childrenPerParents)):
+        for _ in range(math.ceil(births / childrenPerParents)):
             parents = SELECT(population, 2)
             embryos = CROSSOVER(parents[0].chromosome, parents[1].chromosome, childrenPerParents)
             for e in embryos:
@@ -57,7 +66,7 @@ def init(population:list, populationSize:int=None, num_generations:int=30, birth
             break
 
     return {'population':population, 'generation':generation, 'best':best}
-
+init.first_time = True
 
 def debug(population:list, best=None):
     best = best if best else getWorstSpecimen(population)
@@ -91,3 +100,18 @@ def _population_diversity(population:list) -> int:
     for ind in population:
         fitness_values.add(ind.fitness)
     return(len(fitness_values))
+
+
+def StandardGA(population:list):
+
+    population_size = 100
+    max_generation = 50
+    crossover_rate = 80
+    mutation_rate = 10
+
+    #assert(len(population) == population_size)
+
+    return (init(population, populationSize=population_size, num_generations=max_generation, birthRate=crossover_rate, mutationRate=mutation_rate))
+
+
+
