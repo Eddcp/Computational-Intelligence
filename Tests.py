@@ -13,6 +13,7 @@ from Specimen import Specimen
 import multiprocessing as mp
 import threading as th
 from multiprocessing.pool import ThreadPool
+import re
 
 # format='%(funcName)s(): %(message)s'
 
@@ -197,19 +198,66 @@ def experiment1():
     permute_methods(runs)
 
 
+def read_results(file):
+    re_convergence = '\s*convergence of ([0-9]+\.?[0-9]*)'
+    re_time = 'time: ([0-9]+\.?[0-9]*)'
+    re_division = '(---)+'
+
+    re_convergence = re.compile(re_convergence)
+    re_time = re.compile(re_time)
+    re_division = re.compile(re_division)
+
+    problems = []
+    convergences = []
+    times = []
+    for line in file:
+        line = line.lower()
+        print(line)
+        convergence_match = re_convergence.match(line)
+        if convergence_match:
+            print('BLA!')
+            convergences.append(convergence_match.group(1))
+        else:
+            time_match = re_time.match(line)
+            if time_match:
+                times.append(time_match.group(1))
+            else:
+                division_match = re_division.match(line)
+                if division_match:
+                    problems.append((convergences, times))
+                    convergences = []
+                    times = []
+    #problems = problems[1:]
+
+
+    print(problems)
+
+    new_file = open(file.name + '-results.txt', mode='w')
+    for problem in problems:
+        convergences = problem[0]
+        times = problem[1]
+        for convergence, time in zip(convergences, times):
+            new_file.write('{} {}\n'.format(convergence, time))
+        new_file.write('\n')
+
+
+
+
+
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    #logging.basicConfig(level=logging.INFO, format='%(message)s')
     #CryptoArithmetic.getExpression("cross", "roads", result="danger")
     #CryptoArithmetic.getExpression("eat", "that", result="apple")
     #CryptoArithmetic.getExpression("coca", "cola", result="oasis")
     #CryptoArithmetic.getExpression("donald", "gerald", result="robert")
-    CryptoArithmetic.getExpression("send", "more", result="money")
+    #CryptoArithmetic.getExpression("send", "more", result="money")
+
+    file = open('experimento1.txt')
+    read_results(file)
 
 
-
-
-    parallel_run(1000)
+    #parallel_run(1000)
     #experiment1()
 
 
