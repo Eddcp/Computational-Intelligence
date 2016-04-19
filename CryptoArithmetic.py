@@ -3,6 +3,7 @@ import random
 import collections
 import logging
 
+from collections import Counter
 from Specimen import *
 
 BASE = 10
@@ -44,6 +45,8 @@ def getExpression(*terms:str, result:str=None):
     for i in range(max_word_size):
         MAX_VALUE += (BASE-1) * BASE**i
     Specimen.max_fitness = MAX_VALUE
+    #Specimen.max_fitness = len(Letters)
+    #Specimen.max_fitness = len(Result) * (BASE-1)
 
 
 
@@ -64,7 +67,7 @@ def evalResultsDist(alphabet: dict) -> int:
 def makeSpecimen(quantity: int = 1) -> list:
     global Letters
 
-    Specimen.setFitnessEvalFunction(betterEval)
+    Specimen.setFitnessEvalFunction(evalResultsDist)
     population = []
     for i in range(quantity):
         specimenAlphabet = {}
@@ -132,30 +135,150 @@ def betterEval(alphabet:dict) -> int:
     global max_word_size
     global BASE
 
-    debuff = 0
-    buff = 0
+    dist_weight = 0.2
+    hits_weight = 0.8
 
-    if len(Result) > max(*terms_length):
-        most_significant = Result[0]
-        if alphabet[most_significant] in (0, 1):
-            buff += 0.5
+    hits_weight = LettersHitRate(alphabet) * hits_weight
 
+    revision = 0
+    # if len(Result) > max(*terms_length):
+    #     most_significant = Result[0]
+    #     if alphabet[most_significant] in (0, 1):
+    #         revision = 0.25 * Specimen.max_fitness
+
+
+    #if revision > 0.7:
+    #    logging.debug(CA_str_values(alphabet))
+
+    dist = evalResultsDist(alphabet) * dist_weight
+    hits = Specimen.max_fitness * hits_weight
+    eval = dist + hits
+    #eval = min(Specimen.max_fitness, eval + revision)
+
+    return eval
+
+
+def LettersHitRate(alphabet:dict) -> float:
+    #TODO inverter a ordem em que as letras dos termos e do resultado aparecem
+    #TODO o problema esta no fato que o plus_one nao esta sendo calculado direito
+    #TODO uma vez que as somas estao acontecendo do bit mais significativo pro menos
+    global Result
+    global Terms
+
+
+# 'send' -> '_send'
     terms = []
     for term in Terms:
+        #term = term[::-1]
         if len(Result) > len(term):
-            left = ' ' * (len(Result) - len(term))
-            term = left + term
+            most_significant = '_' * (len(Result) - len(term))
+            term = most_significant + term
         terms.append(term)
 
     letters_hits = 0
-    for i, result_letter in enumerate(Result):
-        terms_letters = [term[i] for term in terms if term[i] is not ' ']
-        letters_value = [alphabet[letter] for letter in terms_letters]
-        if sum(letters_value)%BASE == alphabet[result_letter]:
+    plus_one = 0
+    for i in range(len(Result)-1, -1, -1):
+        result_letter = Result[i]
+        terms_letters = [term[i] for term in terms if term[i] is not '_']
+        letters_values = [alphabet[letter] for letter in terms_letters]
+        letters_value = sum(letters_values) + plus_one
+        plus_one = 1 if letters_value >= BASE else 0
+        if letters_value%BASE == alphabet[result_letter]:
             letters_hits += 1
-    buff += (letters_hits / len(Result))
+    letters_hits_rate = (letters_hits / len(Result))
+    return letters_hits_rate
 
 
-    revision = abs(buff - debuff)
+def correct_letters(alphabet:dict):
+    global Result
+    global Terms
+    global Letters
+    global terms_length
 
-    return int(evalResultsDist(alphabet) * revision)
+# 'send' -> '_send'
+    terms = []
+    for term in Terms:
+        #term = term[::-1]
+        if len(Result) > len(term):
+            most_significant = '_' * (len(Result) - len(term))
+            term = most_significant + term
+        terms.append(term)
+
+    plus_one = False
+    correct_letters = Counter()
+    wrong_letters = set()
+    debuff = 0
+    previous_hit = False
+    first_iteration = True
+    for i in range(len(Result)-1, -1, -1):
+        result_letter = Result[i]
+        terms_letters = [term[i] for term in terms if term[i] is not '_']
+        letters_values = [alphabet[letter] for letter in terms_letters]
+        letters_sum = sum(letters_values)
+        letters_sum_plus = letters_sum + 1
+        current_letters = frozenset(terms_letters + list(result_letter))
+
+        if letters_sum%BASE == alphabet[result_letter]:
+            if not plus_one or not previous_hit:
+                for letter in current_letters:
+                    correct_letters[letter] += 1
+                previous_hit = True
+            else:
+                for letter in current_letters:
+                    wrong_letters.add(letter)
+                previous_hit = False
+            plus_one = True if letters_sum >= BASE else False
+
+        elif not first_iteration and letters_sum_plus%BASE == alphabet[result_letter]:
+            if plus_one or not previous_hit:
+                for letter in current_letters:
+                    correct_letters[letter] += 1
+                previous_hit = True
+            else:
+                for letter in current_letters:
+                    wrong_letters.add(letter)
+                previous_hit = False
+            plus_one = True if letters_sum_plus >= BASE else False
+        else:
+            for letter in current_letters:
+                wrong_letters.add(letter)
+            previous_hit = False
+        first_iteration = False
+
+    if len(Result) > max(*terms_length):
+        most_significant = Result[0]
+        if most_significant in correct_letters and alphabet[most_significant] not in (0, 1):
+            debuff += max(1, correct_letters[most_significant])
+
+    for letter in wrong_letters:
+        debuff += correct_letters[letter]
+    letters_hits = max(0, len(correct_letters) - debuff)
+    letters_hits_rate = letters_hits / len(Letters)
+    return letters_hits
+
+
+def each_letter_dist(alphabet:dict):
+    global Result
+    global Terms
+
+# 'send' -> '_send'
+    terms = []
+    for term in Terms:
+        #term = term[::-1]
+        if len(Result) > len(term):
+            most_significant = '_' * (len(Result) - len(term))
+            term = most_significant + term
+        terms.append(term)
+
+    letters_dist = 0
+    plus_one = 0
+    for i in range(len(Result)-1, -1, -1):
+        result_letter = Result[i]
+        terms_letters = [term[i] for term in terms if term[i] is not '_']
+        letters_values = [alphabet[letter] for letter in terms_letters]
+        letters_sum = sum(letters_values) + plus_one
+        plus_one = 1 if letters_sum >= BASE else 0
+        letters_sum = letters_sum % BASE
+        letters_dist += abs(alphabet[result_letter] - letters_sum)
+
+    return Specimen.max_fitness - letters_dist
