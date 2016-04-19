@@ -1,0 +1,411 @@
+
+---------------
+
+    SEND + MORE = MONEY
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+
+   PROPERTIES
+Population Size: 100
+Number of Generations: 50
+Crossover Rate: 80%
+Mutation Rate: 10%
+
+   CONVERGENCE of 72% ; 719 times in 1000!
+   Needed, in general, 22 Generations.
+TIME: 110.94
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 77% ; 767 times in 1000!
+   Needed, in general, 29 Generations.
+TIME: 144.27
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 74% ; 743 times in 1000!
+   Needed, in general, 21 Generations.
+TIME: 102.0
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 82% ; 816 times in 1000!
+   Needed, in general, 25 Generations.
+TIME: 118.84
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 46% ; 463 times in 1000!
+   Needed, in general, 16 Generations.
+TIME: 63.32
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 50% ; 497 times in 1000!
+   Needed, in general, 31 Generations.
+TIME: 116.44
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 57% ; 566 times in 1000!
+   Needed, in general, 15 Generations.
+TIME: 57.0
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 60% ; 595 times in 1000!
+   Needed, in general, 27 Generations.
+TIME: 99.59
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 36% ; 362 times in 1000!
+   Needed, in general, 13 Generations.
+TIME: 53.09
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 39% ; 387 times in 1000!
+   Needed, in general, 34 Generations.
+TIME: 128.92
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 39% ; 388 times in 1000!
+   Needed, in general, 12 Generations.
+TIME: 49.2
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 44% ; 435 times in 1000!
+   Needed, in general, 32 Generations.
+TIME: 117.98
+
+
+---------------
+
+    EAT + THAT = APPLE
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 13% ; 133 times in 1000!
+   Needed, in general, 29 Generations.
+TIME: 134.12
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 12% ; 125 times in 1000!
+   Needed, in general, 46 Generations.
+TIME: 210.2
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 15% ; 150 times in 1000!
+   Needed, in general, 28 Generations.
+TIME: 124.96
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 17% ; 167 times in 1000!
+   Needed, in general, 45 Generations.
+TIME: 197.01
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 11% ; 110 times in 1000!
+   Needed, in general, 18 Generations.
+TIME: 64.92
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 9% ; 89 times in 1000!
+   Needed, in general, 46 Generations.
+TIME: 159.86
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 10% ; 95 times in 1000!
+   Needed, in general, 17 Generations.
+TIME: 60.03
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 9% ; 93 times in 1000!
+   Needed, in general, 46 Generations.
+TIME: 151.98
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 6% ; 61 times in 1000!
+   Needed, in general, 13 Generations.
+TIME: 51.27
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 7% ; 73 times in 1000!
+   Needed, in general, 47 Generations.
+TIME: 162.72
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 7% ; 73 times in 1000!
+   Needed, in general, 13 Generations.
+TIME: 48.62
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 8% ; 84 times in 1000!
+   Needed, in general, 46 Generations.
+TIME: 157.88
+
+
+---------------
+
+    COCA + COLA = OASIS
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 12% ; 115 times in 1000!
+   Needed, in general, 28 Generations.
+TIME: 132.49
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 9% ; 94 times in 1000!
+   Needed, in general, 47 Generations.
+TIME: 215.32
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 14% ; 144 times in 1000!
+   Needed, in general, 26 Generations.
+TIME: 117.51
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 14% ; 136 times in 1000!
+   Needed, in general, 45 Generations.
+TIME: 199.76
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 7% ; 71 times in 1000!
+   Needed, in general, 18 Generations.
+TIME: 66.35
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 7% ; 72 times in 1000!
+   Needed, in general, 47 Generations.
+TIME: 160.16
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 9% ; 93 times in 1000!
+   Needed, in general, 16 Generations.
+TIME: 56.25
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 8% ; 76 times in 1000!
+   Needed, in general, 47 Generations.
+TIME: 156.78
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 4% ; 43 times in 1000!
+   Needed, in general, 13 Generations.
+TIME: 50.57
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 5% ; 54 times in 1000!
+   Needed, in general, 48 Generations.
+TIME: 166.84
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 5% ; 49 times in 1000!
+   Needed, in general, 12 Generations.
+TIME: 47.58
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 6% ; 59 times in 1000!
+   Needed, in general, 47 Generations.
+TIME: 164.67
+
+
+---------------
+
+    DONALD + GERALD = ROBERT
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 3% ; 30 times in 1000!
+   Needed, in general, 40 Generations.
+TIME: 207.0
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 2% ; 24 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 255.53
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 3% ; 27 times in 1000!
+   Needed, in general, 39 Generations.
+TIME: 193.37
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 2% ; 25 times in 1000!
+   Needed, in general, 49 Generations.
+TIME: 243.33
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 2% ; 15 times in 1000!
+   Needed, in general, 24 Generations.
+TIME: 100.77
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 1% ; 12 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 195.1
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 1% ; 10 times in 1000!
+   Needed, in general, 24 Generations.
+TIME: 95.57
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 2% ; 25 times in 1000!
+   Needed, in general, 49 Generations.
+TIME: 189.12
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 1% ; 9 times in 1000!
+   Needed, in general, 18 Generations.
+TIME: 80.22
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 2% ; 19 times in 1000!
+   Needed, in general, 49 Generations.
+TIME: 198.01
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 1% ; 12 times in 1000!
+   Needed, in general, 18 Generations.
+TIME: 75.39
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 2% ; 20 times in 1000!
+   Needed, in general, 49 Generations.
+TIME: 195.19
+
