@@ -409,3 +409,111 @@ Reinsertion:  Elitism
    Needed, in general, 49 Generations.
 TIME: 195.19
 
+
+---------------
+
+    CROSS + ROADS = DANGER
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+
+   PROPERTIES
+Population Size: 100
+Number of Generations: 50
+Crossover Rate: 80%
+Mutation Rate: 10%
+
+   CONVERGENCE of 1% ; 10 times in 1000!
+   Needed, in general, 39 Generations.
+TIME: 193.73
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 0% ; 5 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 249.3
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 1% ; 8 times in 1000!
+   Needed, in general, 37 Generations.
+TIME: 189.64
+
+   METHODS
+Selection:  GoodRoulette 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 1% ; 10 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 248.65
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 0% ; 3 times in 1000!
+   Needed, in general, 22 Generations.
+TIME: 89.62
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 0% ; 4 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 187.29
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 0% ; 0 times in 1000!
+   Needed, in general, 21 Generations.
+TIME: 83.67
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 0% ; 4 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 183.14
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 1% ; 6 times in 1000!
+   Needed, in general, 16 Generations.
+TIME: 66.59
+
+   METHODS
+Selection:  Tournament 
+Crossover:  Cyclic 
+Reinsertion:  Elitism 
+   CONVERGENCE of 0% ; 4 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 191.6
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  BestsInParentsAndChildren 
+   CONVERGENCE of 0% ; 2 times in 1000!
+   Needed, in general, 16 Generations.
+TIME: 64.21
+
+   METHODS
+Selection:  Tournament 
+Crossover:  PMX 
+Reinsertion:  Elitism 
+   CONVERGENCE of 0% ; 2 times in 1000!
+   Needed, in general, 50 Generations.
+TIME: 189.84
+
