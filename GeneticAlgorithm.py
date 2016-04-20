@@ -113,5 +113,24 @@ def StandardGA(population:list):
 
     return (init(population, populationSize=population_size, num_generations=max_generation, birthRate=crossover_rate, mutationRate=mutation_rate))
 
+class CustomGA:
+    def __init__(self, populationSize:int=100, num_generations:int=50, birthRate:int=80, mutationRate:int=10):
+        self.populationSize = populationSize
+        self.num_generations = num_generations
+        self.birthRate = birthRate
+        self.mutationRate = mutationRate
+
+        global SELECT
+        global CROSSOVER
+        global REINSERTION
+        global MUTATION
+
+        SELECT = GoodRoulette
+        CROSSOVER = DictCrossover(PMX).run
+        REINSERTION = BestsInParentsAndChildren
+        MUTATION = dictMutation
+
+    def run(self, population):
+        return (init(population, populationSize=self.populationSize, num_generations=self.num_generations, birthRate=self.birthRate, mutationRate=self.mutationRate))
 
 

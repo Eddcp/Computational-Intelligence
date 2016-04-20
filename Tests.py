@@ -79,7 +79,7 @@ def AG_padrao_serial(runs:int):
 
 
 
-def parallel_run(runs:int):
+def parallel_run(ga:callable, runs:int):
     #logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     #my_log()
 
@@ -95,7 +95,7 @@ def parallel_run(runs:int):
 
     for i in range(min(N_process, runs)):
         population = CryptoArithmetic.makeSpecimen(100)
-        tp.apply_async(GA.StandardGA, args= (population,), callback=results.put)
+        tp.apply_async(ga, args= (population,), callback=results.put)
 
     while completedTasks < runs:
         res = results.get()
@@ -108,7 +108,7 @@ def parallel_run(runs:int):
         if completedTasks >= runs:
             break
         population = CryptoArithmetic.makeSpecimen(100)
-        tp.apply_async(GA.StandardGA, args= (population,), callback=results.put)
+        tp.apply_async(ga, args= (population,), callback=results.put)
     tp.close()
     tp.terminate()
 
@@ -120,6 +120,7 @@ def parallel_run(runs:int):
         logging.debug(s)
         logging.debug(CryptoArithmetic.CA_str_values(s.chromosome))
     #GA.init.first_time = True
+    return hits_rate
 
 
 def AG_pequeno():
@@ -159,10 +160,44 @@ def permute_methods(runs:int):
                 logging.info('Reinsertion: %s', reinsertion.__doc__)
 
                 before = time.time()
-                parallel_run(runs)
+                parallel_run(GA.StandardGA, runs)
                 after = time.time()
 
                 logging.info('TIME: %s\n', round(after - before, 2))
+
+
+def permute_parameters(runs:int):
+
+    populations = (50, 100, 200)
+    generations = (50, 100)
+    crossovers = (60, 80)
+    mutations = (10, 20)
+
+    ga = GA.CustomGA()
+
+    times = []
+    hits = []
+    for pop in populations:
+        for gen in generations:
+            for cross in crossovers:
+                for mut in mutations:
+                    ga.populationSize = pop
+                    ga.num_generations = gen
+                    ga.birthRate = cross
+                    ga.mutationRate = mut
+
+                    before = time.time()
+                    hits_rate = parallel_run(ga.run, runs)
+                    after = time.time()
+
+                    estimated_time = round(after - before, 2)
+                    times.append(estimated_time)
+                    hits.append(hits_rate)
+    return hits, times
+
+
+
+    
 
 
 def my_log():
@@ -196,6 +231,53 @@ def experiment1():
     CryptoArithmetic.getExpression("donald", "gerald", result="robert")
     logging.info("\n---------------\n\n    DONALD + GERALD = ROBERT\n")
     permute_methods(runs)
+
+
+def experiment2():
+    runs = 1000
+
+    #logging.basicConfig(level=logging.INFO, format='%(message)s', filename='experimento2')
+    file = open('tests/experimento2', mode='w')
+
+    CryptoArithmetic.getExpression("send", "more", result="money")
+    #logging.info("\n---------------\n\n    SEND + MORE = MONEY\n")
+    convergences, times = permute_parameters(runs)
+    for convergence, time in zip(convergences, times):
+        file.write('{} {}\n'.format(convergence, time))
+    file.write('\n')
+    file.flush()
+
+    CryptoArithmetic.getExpression("eat", "that", result="apple")
+    #logging.info("\n---------------\n\n    EAT + THAT = APPLE\n")
+    convergences, times = permute_parameters(runs)
+    for convergence, time in zip(convergences, times):
+        file.write('{} {}\n'.format(convergence, time))
+    file.write('\n')
+    file.flush()
+
+    CryptoArithmetic.getExpression("cross", "roads", result="danger")
+    #logging.info("\n---------------\n\n    CROSS + ROADS = DANGER\n")
+    convergences, times = permute_parameters(runs)
+    for convergence, time in zip(convergences, times):
+        file.write('{} {}\n'.format(convergence, time))
+    file.write('\n')
+    file.flush()
+
+    CryptoArithmetic.getExpression("coca", "cola", result="oasis")
+    #logging.info("\n---------------\n\n    COCA + COLA = OASIS\n")
+    convergences, times = permute_parameters(runs)
+    for convergence, time in zip(convergences, times):
+        file.write('{} {}\n'.format(convergence, time))
+    file.write('\n')
+    file.flush()
+
+    CryptoArithmetic.getExpression("donald", "gerald", result="robert")
+    #logging.info("\n---------------\n\n    DONALD + GERALD = ROBERT\n")
+    convergences, times = permute_parameters(runs)
+    for convergence, time in zip(convergences, times):
+        file.write('{} {}\n'.format(convergence, time))
+    file.write('\n')
+    file.flush()
 
 
 def read_results(file):
@@ -253,8 +335,9 @@ if __name__ == "__main__":
     #CryptoArithmetic.getExpression("donald", "gerald", result="robert")
     #CryptoArithmetic.getExpression("send", "more", result="money")
 
-    file = open('experimento1.txt')
-    read_results(file)
+    #file = open('experimento1.txt')
+    #read_results(file)
+    experiment2()
 
 
     #parallel_run(1000)
