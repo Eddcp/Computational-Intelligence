@@ -1,9 +1,9 @@
 
-public class Edge {
+class Edge {
 
-    public Double cost;
-    public Vertex vertex1;
-    public Vertex vertex2;
+    Double cost;
+    Vertex vertex1;
+    Vertex vertex2;
 
     Edge(Vertex v1, Vertex v2, Double cost) {
         this.vertex1 = v1;
@@ -11,7 +11,7 @@ public class Edge {
         this.cost = cost;
     }
 
-    public Vertex getOtherVertex(Vertex v) {
+    Vertex getOtherVertex(Vertex v) {
         Vertex other;
         if (v == this.vertex1) {
             other = this.vertex2;

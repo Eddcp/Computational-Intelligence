@@ -2,17 +2,17 @@ import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Vertex {
+class Vertex {
 
-    public Point position;
-    public List<Edge> neighborEdges;
-    public List<Vertex> neighborVertices;
+    Point position;
+    List<Edge> neighborEdges;
+    List<Vertex> neighborVertices;
 
     Vertex(Point position) {
         this.position = position;
     }
 
-    public List<Vertex> getNeighborVertices() {
+    List<Vertex> getNeighborVertices() {
         List<Vertex> neighbors = new LinkedList<>();
         for(Edge e : neighborEdges) {
             Vertex v;
@@ -26,7 +26,17 @@ public class Vertex {
         return neighbors;
     }
 
-    public List<Edge> getNeighborEdges() {
+    List<Edge> getNeighborEdges() {
         return neighborEdges;
+    }
+
+    Edge getEdgeForVertex(Vertex other) {
+        for (Edge e : neighborEdges) {
+            Vertex v = e.getOtherVertex(this);
+            if (v == other) {
+                return e;
+            }
+        }
+        return null;
     }
 }
