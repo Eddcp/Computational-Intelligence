@@ -1,29 +1,21 @@
-import java.awt.Point;
+import javafx.geometry.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
 class Vertex {
 
-    Point position;
-    List<Edge> neighborEdges;
-    List<Vertex> neighborVertices;
+    Integer id;
+    Point2D position;
+    List<Edge> neighborEdges = new LinkedList<>();
+    List<Vertex> neighborVertices = new LinkedList<>();
 
-    Vertex(Point position) {
+    Vertex(Integer id, Point2D position) {
+        this.id = id;
         this.position = position;
     }
 
     List<Vertex> getNeighborVertices() {
-        List<Vertex> neighbors = new LinkedList<>();
-        for(Edge e : neighborEdges) {
-            Vertex v;
-            if (e.vertex1 != this) {
-                v = e.vertex1;
-            } else {
-                v = e.vertex2;
-            }
-            neighbors.add(v);
-        }
-        return neighbors;
+        return neighborVertices;
     }
 
     List<Edge> getNeighborEdges() {
@@ -38,5 +30,15 @@ class Vertex {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 }

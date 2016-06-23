@@ -1,3 +1,4 @@
+import java.util.List;
 
 class Edge {
 
@@ -21,4 +22,21 @@ class Edge {
         return other;
     }
 
+    static Double getEdgePathCost(List<Edge> edges) {
+        Double cost = 0.;
+        for (Edge e : edges) {
+            cost += e.cost;
+        }
+        return cost;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%1$s %2$s): %3$.0f", vertex1, vertex2, cost);
+    }
+
+    @Override
+    public int hashCode() {
+        return (vertex1.hashCode() + vertex2.hashCode() + cost.hashCode());
+    }
 }

@@ -1,5 +1,11 @@
-import java.awt.*;
+//TODO trocar as listas de vertices e de arestas por Sets:
+//      em um problema com 29 vertices, teremos aproximadamente 400 arestas,
+//      o que pode prejudicar a operaçao de contains().
+//      além de que não importa a ordem dos vértices ou das arestas.
+//TODO fazer a modificacao acima nas listas de vizinhos da classe Vertex.
+
 import java.io.BufferedReader;
+import javafx.geometry.Point2D;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashSet;
@@ -9,8 +15,8 @@ import java.util.Set;
 
 class Graph {
 
-    List<Vertex> vertices;
-    List<Edge> edges;
+    List<Vertex> vertices = new LinkedList<>();
+    List<Edge> edges = new LinkedList<>();
 
 
     Graph(File fileWithXandYOfVertices) {
@@ -20,18 +26,19 @@ class Graph {
             String line;
             while( (line = reader.readLine()) != null ) {
                 String[] parts = line.split("\\s");
-                Integer x = Integer.parseInt(parts[0]);
-                Integer y = Integer.parseInt(parts[1]);
+                Integer id = Integer.parseInt(parts[0]);
+                Double x = Double.parseDouble(parts[1]);
+                Double y = Double.parseDouble(parts[2]);
 
-                Point position = new Point(x, y);
-                vertices.add(new Vertex(position));
+                Point2D position = new Point2D(x, y);
+                vertices.add(new Vertex(id, position));
             }
 
-            for(Vertex v1 : vertices) {
-                for (Vertex v2 : vertices) {
-                    if(v1 == v2) {
-                        continue;
-                    }
+            for (int i = 0; i < (vertices.size() - 1); i++) {
+                for (int j = i+1; j < vertices.size(); j++) {
+                    Vertex v1 = vertices.get(i);
+                    Vertex v2 = vertices.get(j);
+
                     Edge edge = new Edge(v1, v2, v1.position.distance(v2.position));
                     v1.neighborEdges.add(edge);
                     v2.neighborEdges.add(edge);
@@ -41,12 +48,13 @@ class Graph {
                 }
             }
 
+
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
     }
 
-    List<Edge> getEdgePath(List<Vertex> vertices) {
+    List<Edge> getEdgePathForVertices(List<Vertex> vertices) {
         List<Edge> edges = new LinkedList<>();
         Vertex current;
         Vertex next;
@@ -63,9 +71,8 @@ class Graph {
         return edges;
     }
 
-    // criar a sequencia de vertices, dado um caminho de arestas, nao eh tao trivial
-    // pq se o grafo for nao-direcionado,
-    List<Vertex> getVerticesOfEdgePath(List<Edge> edges) {
+
+    static List<Vertex> getVerticesOfEdgePath(List<Edge> edges) {
         List<Vertex> vertices = new LinkedList<>();
         Vertex initialVertex;
 

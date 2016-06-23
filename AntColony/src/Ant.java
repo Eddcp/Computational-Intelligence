@@ -1,46 +1,55 @@
 import java.util.*;
 
-class Ant {
-
-    private class EdgeWithChance {
+class Ant
+{
+    private class EdgeWithChance
+    {
         private Double chance;
-        private Vertex vertex;
+        private Edge edge;
 
-        EdgeWithChance(Vertex vertex, Double chance) {
-            this.vertex = vertex;
+        EdgeWithChance(Edge edge, Double chance) {
+            this.edge = edge;
             this.chance = chance;
         }
     }
 
     Set<Vertex> visitedVertices = new LinkedHashSet<>();
+    List<Edge> pathTaken = new LinkedList<>();
+
     Vertex initialVertex;
     Vertex currentVertex;
     Vertex previousVertex;
     AntColony colony;
-    List<Edge> pathTaken;
 
-    Ant(AntColony colony, Vertex initialVertex) {
+    Ant(AntColony colony, Vertex initialVertex)
+    {
         this.colony = colony;
         this.previousVertex = null;
         this.currentVertex = initialVertex;
         this.visitedVertices.add(initialVertex);
         this.initialVertex = initialVertex;
-
     }
 
-    boolean goToNextVertex() {
-        Vertex next = chooseNextVertex();
-        if (next == initialVertex) {
-            return false;
+    Edge goToNextEdge()
+    {
+        Edge next = chooseNextEdge();
+        if (next == null && currentVertex != initialVertex) {
+            next = currentVertex.getEdgeForVertex(initialVertex);
+        } else if (next == null && currentVertex == initialVertex) {
+            colony.antDidReturn(this);
+            return null;
         }
-        visitedVertices.add(next);
-        pathTaken.add();
+
+        Vertex v = next.getOtherVertex(currentVertex);
+        visitedVertices.add(v);
+        pathTaken.add(next);
         previousVertex = currentVertex;
-        currentVertex = next;
-        return true;
+        currentVertex = v;
+        return next;
     }
 
-    private Vertex chooseNextVertex() {
+    private Edge chooseNextEdge()
+    {
         List<Vertex> neighborsVertices = currentVertex.getNeighborVertices();
         List<Edge> neighborsEdges = currentVertex.getNeighborEdges();
 
@@ -52,28 +61,26 @@ class Ant {
                 continue;
             }
 
-            Double cost = (colony.getHeuristicCost(e) * colony.getPheromoneCost(e));
             possibleEdges.add(new EdgeWithChance(e, costSum));
-            costSum += cost;
+            costSum += colony.getColonyCost(e);
         }
 
         if (possibleEdges.size() == 0) {
-            return initialVertex;
+            return null;
         }
 
         Random generator = new Random();
-        Double randomCost = generator.nextDouble() % costSum;
+        Double randomCost = generator.nextDouble() * costSum;
         EdgeWithChance chosen = possibleEdges.get(0);
-        for (EdgeWithChance vc : possibleEdges) {
-            if (randomCost < vc.chance) {
+        for (EdgeWithChance ec : possibleEdges) {
+            if (randomCost < ec.chance) {
                 break;
             }
-            chosen = vc;
+            chosen = ec;
         }
 
-        return chosen.vertex;
+        return chosen.edge;
     }
 
-
-
+    
 }

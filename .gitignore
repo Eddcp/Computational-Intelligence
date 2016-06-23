@@ -1,3 +1,4 @@
 .idea/
 __pycache__/
 AntColony/AntColony.iml
+out/
